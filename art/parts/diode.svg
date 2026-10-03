@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+<title>Diode (1N4007)</title>
+<defs>
+  <filter id="pencil" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="5" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</defs>
+<g filter="url(#pencil)" stroke="#2f2e2b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- one straight lead out of each end -->
+  <path d="M16 110 H96 M224 110 H304" stroke="#8d8b85" stroke-width="3.2" fill="none"/>
+  <!-- the black body, lying sideways -->
+  <rect x="92" y="80" width="136" height="60" rx="15" fill="#3b3a37"/>
+  <!-- one gray band, near one end -->
+  <rect x="194" y="81.5" width="17" height="57" fill="#b8b6ae" stroke="none"/>
+  <rect x="92" y="80" width="136" height="60" rx="15" fill="none"/>
+  <path d="M108 91 C122 87 140 86 158 87" stroke="#ffffff" stroke-width="3" fill="none" opacity="0.85"/>
+  <!-- label arrows -->
+  <path d="M232 52 C222 58 212 64 203 74" fill="none" stroke-width="1.6"/>
+  <path d="M204 66 L203 74 L211 72" fill="none" stroke-width="1.6"/>
+  <path d="M84 176 C94 170 104 160 110 148" fill="none" stroke-width="1.6"/>
+  <path d="M103 152 L110 148 L111 156" fill="none" stroke-width="1.6"/>
+</g>
+<g font-family="'Chalkboard SE', 'Comic Sans MS', 'Segoe Print', Noteworthy, cursive" fill="#2f2e2b">
+  <text x="150" y="118" font-size="19" text-anchor="middle" fill="#b8b6ae">07</text>
+  <text x="216" y="44" font-size="16">gray band</text>
+  <text x="12" y="190" font-size="16">black body</text>
+</g>
+</svg>

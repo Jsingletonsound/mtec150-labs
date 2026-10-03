@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="{{icons_css}}">
+<style>
+/* The page around one animated breadboard. The colors match site/style.css.
+   The board itself keeps its fixed "physical" colors in light and dark mode, on purpose. */
+:root {
+  --text-primary: #1f1e1d;
+  --text-secondary: #55534d;
+  --text-accent: #185fa5;
+  --border: #d9d6cd;
+  --border-strong: #8a877e;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --bg: #f6f4ef;
+  --button: #ffffff;
+  --button-hover: #ece9e1;
+  --focus: #185fa5;
+  --bench: transparent;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-primary: #ecebe6;
+    --text-secondary: #bdbab2;
+    --text-accent: #8ec2f7;
+    --border: #3d3c38;
+    --border-strong: #7d7a72;
+    --bg: #23221f;
+    --button: #2e2d2a;
+    --button-hover: #3a3935;
+    --focus: #8ec2f7;
+    --bench: #c9c5bb; /* a light bench behind the board, so the black battery and leads stay visible */
+  }
+}
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+html.projector { font-size: 20px; }
+body {
+  margin: 0;
+  padding: 12px 14px 16px;
+  display: flow-root;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--bg);
+}
+svg { display: block; background: var(--bench); border-radius: 8px; }
+.ts { font-size: 12px; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+button {
+  font: inherit;
+  font-size: 0.9375rem;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--button);
+  color: var(--text-primary);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+button:hover { background: var(--button-hover); }
+button .ti { font-size: 1.1em; vertical-align: -2px; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+input[type="range"] { accent-color: var(--text-accent); min-height: 32px; }
+/* The engine sets a few sizes in pixels; these keep them readable and let the projector setting scale them. */
+svg + p { font-size: 0.8125rem !important; }
+#ct { font-size: 0.875rem !important; }
+#ro { font-size: 0.875rem !important; }
+#ix label { font-size: 0.875rem !important; }
+/* On a phone the board is drawn small: bigger strip numbers and seat letters. */
+@media (max-width: 480px) { .ts { font-size: 20px; } }
+@media (prefers-reduced-motion: reduce) { #pb { transition: none !important; } }
+</style>
+</head>
+<body>
+{{widget}}
+<script>
+// Tells the page around this frame how tall the widget is, so the frame fits it exactly;
+// follows the page's projector setting; and helps keyboard and screen-reader users.
+(function () {
+  function report(ready) {
+    var msg = { type: 'mtec-widget', height: document.body.scrollHeight };
+    if (ready) msg.ready = true;
+    if (window.parent !== window) window.parent.postMessage(msg, '*');
+  }
+  window.addEventListener('load', function () { report(); });
+  if (window.ResizeObserver) new ResizeObserver(function () { report(); }).observe(document.body);
+
+  // Every step change: report the height, and announce the new step to screen readers.
+  var counter = document.getElementById('ct'); // "K3 · Step 3 of 8"
+  var title = document.getElementById('tt');
+  var live = document.createElement('p');
+  live.className = 'sr-only';
+  live.setAttribute('aria-live', 'polite');
+  document.body.appendChild(live);
+  if (counter) new MutationObserver(function () {
+    report();
+    live.textContent = counter.textContent + '. ' + (title ? title.textContent : '');
+  }).observe(counter, { childList: true, characterData: true, subtree: true });
+
+  // "Show result" removes itself when pressed: put keyboard focus on Next, and read the result out.
+  var result = document.getElementById('wy');
+  var next = document.getElementById('nx');
+  if (result) result.setAttribute('aria-live', 'polite');
+  var controls = document.getElementById('ix');
+  if (controls && next) controls.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('button');
+    if (b && b.textContent.trim() === 'Show result') setTimeout(function () { next.focus(); }, 0);
+  }, true);
+
+  // The page tells us: projector on or off, and how tall its window is. With the projector on,
+  // the board shrinks if needed so the board and the step text fit on the screen together.
+  window.addEventListener('message', function (e) {
+    if (e.source !== window.parent || !e.data || e.data.type !== 'mtec-site') return;
+    var on = !!e.data.projector;
+    document.documentElement.classList.toggle('projector', on);
+    var board = document.querySelector('svg');
+    if (board) board.style.maxHeight = on && e.data.screenH ? Math.max(260, e.data.screenH - 360) + 'px' : '';
+    report();
+  });
+  report(true);
+})();
+</script>
+</body>
+</html>

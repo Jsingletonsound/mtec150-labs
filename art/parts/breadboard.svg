@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+<title>Breadboard</title>
+<defs>
+  <filter id="pencil" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="11" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</defs>
+<g filter="url(#pencil)" stroke="#2f2e2b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- the board's thickness, then the white top -->
+  <g transform="translate(160 111) rotate(-5)"><rect x="-142" y="-61" width="284" height="122" rx="6" fill="#d9d6cc"/></g>
+  <g transform="translate(160 104) rotate(-5)">
+    <rect x="-142" y="-61" width="284" height="122" rx="6" fill="#ffffff"/>
+    <!-- the center gap that splits the board -->
+    <rect x="-138" y="-2.4" width="276" height="4.8" rx="2" fill="#e6e3da" stroke-width="1.4"/>
+    <!-- a red line and a blue line along each long edge -->
+    <path d="M-132 -56 H132 M-132 56 H132" stroke="#e0483e" fill="none"/>
+    <path d="M-132 -38 H132 M-132 38 H132" stroke="#4a86d8" fill="none"/>
+    <!-- the holes: rails along the edges, short columns in between -->
+    <g stroke="#55534e" stroke-width="2.4" stroke-linecap="butt" fill="none">
+      <path d="M-130.2 -30 H130.2" stroke-dasharray="2.4 3.6"/>
+      <path d="M-130.2 -24 H130.2" stroke-dasharray="2.4 3.6"/>
+      <path d="M-130.2 -18 H130.2" stroke-dasharray="2.4 3.6"/>
+      <path d="M-130.2 -12 H130.2" stroke-dasharray="2.4 3.6"/>
+      <path d="M-130.2 -6 H130.2" stroke-dasharray="2.4 3.6"/>
+      <path d="M-130.2 6 H130.2" stroke-dasharray="2.4 3.6"/>
+      <path d="M-130.2 12 H130.2" stroke-dasharray="2.4 3.6"/>
+      <path d="M-130.2 18 H130.2" stroke-dasharray="2.4 3.6"/>
+      <path d="M-130.2 24 H130.2" stroke-dasharray="2.4 3.6"/>
+      <path d="M-130.2 30 H130.2" stroke-dasharray="2.4 3.6"/>
+      <path d="M-121.2 -50 H121.2" stroke-dasharray="2.4 3.6 2.4 3.6 2.4 3.6 2.4 3.6 2.4 9.6"/>
+      <path d="M-121.2 -44 H121.2" stroke-dasharray="2.4 3.6 2.4 3.6 2.4 3.6 2.4 3.6 2.4 9.6"/>
+      <path d="M-121.2 44 H121.2" stroke-dasharray="2.4 3.6 2.4 3.6 2.4 3.6 2.4 3.6 2.4 9.6"/>
+      <path d="M-121.2 50 H121.2" stroke-dasharray="2.4 3.6 2.4 3.6 2.4 3.6 2.4 3.6 2.4 9.6"/>
+    </g>
+  </g>
+</g>
+</svg>

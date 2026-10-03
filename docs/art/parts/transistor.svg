@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+<title>Transistors (PN2222)</title>
+<defs>
+  <filter id="pencil" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="11" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</defs>
+<g filter="url(#pencil)" stroke="#2f2e2b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- the big transistor: three legs side by side -->
+  <path d="M112 142 V204 M132 142 V204 M152 142 V204" stroke="#8d8b85" stroke-width="3.2" fill="none"/>
+  <!-- rounded back, seen from a little above -->
+  <path d="M92 66 A40 22 0 0 1 172 66 Z" fill="#55534e"/>
+  <!-- the flat face, toward us -->
+  <rect x="92" y="66" width="80" height="76" rx="3" fill="#3b3a37"/>
+  <path d="M108 56 C118 51 132 49 144 50" stroke="#ffffff" stroke-width="3" fill="none" opacity="0.85"/>
+  <!-- printing on the flat face: two rows of scribbles, not real letters -->
+  <g stroke="#b8b6ae" stroke-width="1.5" fill="none">
+    <path d="M108.9 101 c0.4 -5 3.8 -5 4.2 0 c2.1 -2.9 3.8 -4.2 2.1 -4.2 c-2.1 0 -1.3 3.4 2.1 4.2 c2.1 -4.9 3.8 -7 2.1 -7 c-2.1 0 -1.3 5.6 2.1 7 M127.8 101 c2.1 -2.9 3.8 -4.2 2.1 -4.2 c-2.1 0 -1.3 3.4 2.1 4.2 c0.4 -5 3.8 -5 4.2 0 M142.5 101 c2.1 -2.9 3.8 -4.2 2.1 -4.2 c-2.1 0 -1.3 3.4 2.1 4.2 c0.4 -5 3.8 -5 4.2 0 c2.1 -2.9 3.8 -4.2 2.1 -4.2 c-2.1 0 -1.3 3.4 2.1 4.2"/>
+    <path d="M116.2 116 c0.4 -5 3.8 -5 4.2 0 c2.1 -2.9 3.8 -4.2 2.1 -4.2 c-2.1 0 -1.3 3.4 2.1 4.2 c2.1 -4.9 3.8 -7 2.1 -7 c-2.1 0 -1.3 5.6 2.1 7 c0.4 -5 3.8 -5 4.2 0 M139.3 116 c0.4 -5 3.8 -5 4.2 0 c2.1 -2.9 3.8 -4.2 2.1 -4.2 c-2.1 0 -1.3 3.4 2.1 4.2"/>
+  </g>
+  <!-- a second one, smaller -->
+  <g>
+    <path d="M232 136 V176 M242 136 V176 M252 136 V176" stroke="#8d8b85" stroke-width="2.4" fill="none"/>
+    <path d="M222 96 A20 10 0 0 1 262 96 Z" fill="#55534e"/>
+    <rect x="222" y="96" width="40" height="40" rx="2" fill="#3b3a37"/>
+    <g stroke="#b8b6ae" stroke-width="1.2" fill="none">
+      <path d="M232.6 112 c0.3 -3.2 2.4 -3.2 2.7 0 c1.3 -1.9 2.4 -2.7 1.3 -2.7 c-1.3 0 -0.8 2.2 1.3 2.7 c0.3 -3.2 2.4 -3.2 2.7 0 M244.7 112 c0.3 -3.2 2.4 -3.2 2.7 0 c1.3 -1.9 2.4 -2.7 1.3 -2.7 c-1.3 0 -0.8 2.2 1.3 2.7"/>
+      <path d="M236.4 121 c0.3 -3.2 2.4 -3.2 2.7 0 c1.3 -1.9 2.4 -2.7 1.3 -2.7 c-1.3 0 -0.8 2.2 1.3 2.7 c0.3 -3.2 2.4 -3.2 2.7 0 c1.3 -3.1 2.4 -4.5 1.3 -4.5 c-1.3 0 -0.8 3.6 1.3 4.5"/>
+    </g>
+  </g>
+  <!-- label arrows -->
+  <path d="M46 54 C54 66 68 88 84 98" fill="none" stroke-width="1.6"/>
+  <path d="M80 91 L84 98 L76 99" fill="none" stroke-width="1.6"/>
+  <path d="M186 194 C178 190 168 186 160 184" fill="none" stroke-width="1.6"/>
+  <path d="M167 180 L160 184 L167 189" fill="none" stroke-width="1.6"/>
+</g>
+<g font-family="'Chalkboard SE', 'Comic Sans MS', 'Segoe Print', Noteworthy, cursive" font-size="16" fill="#2f2e2b">
+  <text x="8" y="44">flat face</text>
+  <text x="190" y="202">three legs</text>
+</g>
+</svg>

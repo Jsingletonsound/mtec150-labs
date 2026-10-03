@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+<title>Power module</title>
+<defs>
+  <filter id="pencil" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="11" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</defs>
+<g filter="url(#pencil)" stroke="#2f2e2b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- pins underneath, at both ends -->
+  <path d="M33.3 129.2 V175.2 M45.3 129.2 V175.2 M241.2 129.2 V175.2 M253.2 129.2 V175.2" stroke="#8d8b85" stroke-width="3.2" fill="none"/>
+  <!-- the black board -->
+  <path d="M18.4 128 L262.2 128 L301.6 52.1 L57.8 52.1 Z" fill="#4a4945"/>
+  <path d="M18.4 128 L262.2 128 L262.2 137.2 L18.4 137.2 Z" fill="#3b3a37"/>
+  <path d="M262.2 128 L301.6 52.1 L301.6 61.3 L262.2 137.2 Z" fill="#2c2c2a"/>
+  <path d="M200 120 C212 118 226 117 240 117" stroke="#ffffff" stroke-width="3" fill="none" opacity="0.85"/>
+  <!-- the round jack: a black block with a round hole -->
+  <path d="M39 82 L85 82 L102.9 47.5 L56.9 47.5 Z" fill="#615f5a"/>
+  <path d="M85 132.6 L102.9 98.1 L102.9 47.5 L85 82 Z" fill="#2c2c2a"/>
+  <path d="M39 132.6 L85 132.6 L85 82 L39 82 Z" fill="#3b3a37"/>
+  <circle cx="62" cy="108.8" r="11.3" fill="#1f1e1c"/>
+  <circle cx="62" cy="108.8" r="3.7" fill="#8d8b85" stroke="none"/>
+  <path d="M45.5 103 C45.5 97 47.5 93 52.5 91" stroke="#ffffff" stroke-width="3" fill="none" opacity="0.85"/>
+  <!-- the USB socket: a small silver box with a slot -->
+  <path d="M107.4 106.2 L167.2 106.2 L184.5 72.8 L124.7 72.8 Z" fill="#d3d1ca"/>
+  <path d="M167.2 133.8 L184.5 100.4 L184.5 72.8 L167.2 106.2 Z" fill="#9c9a93"/>
+  <path d="M107.4 133.8 L167.2 133.8 L167.2 106.2 L107.4 106.2 Z" fill="#b8b6ae"/>
+  <rect x="114.7" y="112.1" width="45.1" height="15.6" rx="1.5" fill="#2c2c2a"/>
+  <path d="M118 99.6 C128 98 140 97.4 152 97.4" stroke="#ffffff" stroke-width="3" fill="none" opacity="0.85"/>
+</g>
+</svg>

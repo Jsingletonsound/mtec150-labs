@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+<title>Potentiometer ("pot"), 10K</title>
+<defs>
+  <filter id="pencil" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="31" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</defs>
+<g filter="url(#pencil)" stroke="#2f2e2b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- three legs side by side -->
+  <path d="M102.1 126.8 L102.1 186.2 M146 133.5 L146 192.9 M189.9 140.2 L189.9 199.6" stroke="#8d8b85" stroke-width="3.2" fill="none"/>
+  <!-- the blue body -->
+  <path d="M197.9 171.6 L232.5 121.6 L232.5 57.3 L197.9 107.3 Z" fill="#6f9fca"/>
+  <path d="M59.5 150.4 L197.9 171.6 L197.9 107.3 L59.5 86.2 Z" fill="#8fb8de"/>
+  <path d="M94.1 36.2 L232.5 57.3 L197.9 107.3 L59.5 86.2 Z" fill="#a9c9e6"/>
+  <!-- the round top that turns, with its pointer line -->
+  <path d="M111 63.1 V71.7 A35 16.4 0 0 0 181 71.7 V63.1 Z" fill="#e2dcc4"/>
+  <ellipse cx="146" cy="63.1" rx="35" ry="16.4" fill="#fbf1d2"/>
+  <path d="M146 63.1 L170.3 55.9" stroke-width="3.2" fill="none"/>
+  <!-- curved arrow: the top turns -->
+  <path d="M108.1 22.4 L111.6 20.9 L115.5 19.6 L119.5 18.4 L123.8 17.4 L128.2 16.6 L132.8 15.9 L137.5 15.5 L142.2 15.2 L147 15.2 L151.7 15.3 L156.4 15.7 L161 16.2 L165.6 16.9 L169.9 17.8 L174.1 18.8 L178.1 20.1 L181.8 21.5 L185.3 23 L188.4 24.7 L191.3 26.5 L193.8 28.4 L195.9 30.4 L197.6 32.5 L199 34.6" stroke-width="1.6" fill="none"/>
+  <path d="M116 23.4 L108.1 22.4 L112.9 16 M198.7 26.6 L199 34.6 L191.9 30.9" stroke-width="1.6" fill="none"/>
+</g>
+<g font-family="'Chalkboard SE', 'Comic Sans MS', 'Segoe Print', Noteworthy, cursive" fill="#2f2e2b">
+  <text x="207" y="32.6" font-size="17">turn</text>
+  <text transform="matrix(0.951 0.145 0 1 128.7 128.9)" y="7" font-size="22" text-anchor="middle">103</text>
+</g>
+</svg>

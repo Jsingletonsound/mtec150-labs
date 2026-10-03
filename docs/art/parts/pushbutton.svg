@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+<title>Pushbutton</title>
+<defs>
+  <filter id="pencil" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="23" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</defs>
+<g filter="url(#pencil)" stroke="#2f2e2b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- legs on the far side, behind the body -->
+  <path d="M209.7 78.7 L231.5 75.7 L231.5 152.9 M238.2 98.4 L259.9 95.4 L259.9 172.7" stroke="#8d8b85" stroke-width="3.2" fill="none"/>
+  <!-- the small square body -->
+  <path d="M67.6 97 L124.5 136.6 L124.5 96.6 L67.6 57.1 Z" fill="#2f2e2b"/>
+  <path d="M124.5 136.6 L252.4 119 L252.4 79 L124.5 96.6 Z" fill="#3b3a37"/>
+  <path d="M67.6 57.1 L195.5 39.5 L252.4 79 L124.5 96.6 Z" fill="#4d4c48"/>
+  <!-- legs on the near side -->
+  <path d="M81.8 96.3 L60.1 99.3 L60.1 176.5 M110.3 116 L88.5 119 L88.5 196.2" stroke="#8d8b85" stroke-width="3.2" fill="none"/>
+  <!-- the round button on top -->
+  <path d="M119.4 33.4 V68.1 A40.6 12.5 0 0 0 200.6 68.1 V33.4 Z" fill="#3b3a37"/>
+  <ellipse cx="160" cy="33.4" rx="40.6" ry="12.5" fill="#55534e"/>
+  <path d="M134.8 32.8 A28.4 7.5 0 0 1 158 25.7" stroke="#ffffff" stroke-width="3" fill="none" opacity="0.85"/>
+</g>
+</svg>

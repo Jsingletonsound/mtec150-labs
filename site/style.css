@@ -1,0 +1,452 @@
+/* MTEC 150 lab pages. One stylesheet for every page.
+   Colors live in the variables just below: light mode first, then dark mode.
+   Print styles are at the bottom. */
+
+:root {
+  --bg: #ffffff;
+  --surface: #f6f4ef;
+  --text: #1f1e1d;
+  --text-2: #55534d;
+  --accent: #185fa5;
+  --border: #d9d6cd;
+  --border-strong: #8a877e;
+  --focus: #185fa5;
+
+  --safety-edge: #c4302b;
+  --safety-bg: #fdf0ef;
+  --safety-ink: #9c231f;
+  --remember-edge: #d49b16;
+  --remember-bg: #fff7e0;
+  --remember-ink: #6d4c00;
+  --predict-edge: #185fa5;
+  --predict-bg: #edf4fb;
+  --challenge-edge: #2e7d46;
+  --challenge-bg: #edf7f0;
+  --challenge-ink: #22603a;
+  --teacher-edge: #6a4fb6;
+  --teacher-bg: #f3effb;
+  --teacher-ink: #4c3591;
+  --draft-bg: #fff1d6;
+  --draft-ink: #6d4c00;
+  --published-bg: #e3f2e7;
+  --published-ink: #22603a;
+
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --radius: 10px;
+  --width: 42rem; /* about 760 px of text */
+
+  color-scheme: light dark;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  :root {
+    --bg: #171716;
+    --surface: #23221f;
+    --text: #ecebe6;
+    --text-2: #bdbab2;
+    --accent: #8ec2f7;
+    --border: #3d3c38;
+    --border-strong: #7d7a72;
+    --focus: #8ec2f7;
+
+    --safety-edge: #f0736b;
+    --safety-bg: #351c1a;
+    --safety-ink: #ffb3ad;
+    --remember-edge: #e3b341;
+    --remember-bg: #2f2814;
+    --remember-ink: #f3d27e;
+    --predict-edge: #8ec2f7;
+    --predict-bg: #1b2734;
+    --challenge-edge: #6cc58a;
+    --challenge-bg: #18291e;
+    --challenge-ink: #9ee0b3;
+    --teacher-edge: #a991f0;
+    --teacher-bg: #252036;
+    --teacher-ink: #cdbfff;
+    --draft-bg: #3a2f14;
+    --draft-ink: #f3d27e;
+    --published-bg: #1d3325;
+    --published-ink: #9ee0b3;
+  }
+}
+
+/* ---------- Base */
+
+html { font-size: 112.5%; -webkit-text-size-adjust: 100%; }   /* 18 px */
+html.projector { font-size: 140.625%; }                        /* 25% bigger: 22.5 px */
+@media (max-width: 480px) {
+  html { font-size: 106.25%; }                                 /* 17 px on phones */
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.6;
+}
+
+main, .bar-inner, .site-foot p {
+  max-width: var(--width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+main { padding-bottom: 2rem; }
+
+a { color: var(--accent); text-underline-offset: 0.15em; }
+a:hover { text-decoration-thickness: 2px; }
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+
+h1, h2, h3 { line-height: 1.25; }
+h1 { font-size: 2rem; margin: 0.25rem 0 0.5rem; }
+h2 {
+  font-size: 1.375rem;
+  margin: 2.75rem 0 0.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+h3 { font-size: 1.125rem; margin: 1.75rem 0 0.5rem; }
+
+p, ul, ol { margin: 0 0 1rem; }
+ul, ol { padding-left: 1.5rem; }
+li { margin: 0.3rem 0; }
+li > p { margin: 0; }
+strong { font-weight: 650; }
+
+.skip {
+  position: absolute; left: 8px; top: -100px; z-index: 10;
+  background: var(--bg); color: var(--accent); padding: 8px 12px; border-radius: 6px;
+}
+.skip:focus { top: 8px; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- Teacher view: ?teacher=1 */
+
+body:not(.teacher) .teacher-only { display: none !important; }
+
+.teacher-badge {
+  font-size: 0.75rem; font-weight: 650; letter-spacing: 0.02em;
+  color: var(--teacher-ink); background: var(--teacher-bg);
+  border: 1px solid var(--teacher-edge); border-radius: 999px;
+  padding: 2px 10px; white-space: nowrap;
+}
+
+/* ---------- Header */
+
+.site-bar { border-bottom: 1px solid var(--border); background: var(--surface); }
+.bar-inner {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding-top: 8px; padding-bottom: 8px;
+}
+.home {
+  margin-right: auto; color: var(--text); text-decoration: none; font-weight: 600;
+  font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px; min-height: 44px;
+}
+.home:hover { text-decoration: underline; }
+.home .ti { font-size: 1.15rem; color: var(--accent); }
+
+.projector-toggle {
+  font: inherit; font-size: 0.85rem; color: var(--text);
+  background: var(--bg); border: 1px solid var(--border-strong); border-radius: 8px;
+  min-height: 44px; padding: 6px 12px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.projector-toggle:hover { border-color: var(--text); }
+.projector-toggle[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+
+.page-head { margin: 1.75rem 0 1.5rem; }
+.when, .sub { color: var(--text-2); font-size: 0.95rem; margin: 0; }
+.page-meta {
+  font-size: 0.9rem; color: var(--teacher-ink); background: var(--teacher-bg);
+  border-left: 4px solid var(--teacher-edge); border-radius: 6px; padding: 8px 12px; margin: 0.75rem 0 0;
+}
+.draft-banner {
+  background: var(--draft-bg); color: var(--draft-ink); font-weight: 600;
+  border-radius: var(--radius); padding: 10px 14px;
+}
+.sim a { font-weight: 600; }
+
+/* ---------- Boxes: remember, safety, challenge, teacher notes, if it's dark */
+
+.box {
+  border-left: 5px solid var(--border-strong);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem 0.1rem;
+  margin: 1.25rem 0;
+}
+.box-label {
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  margin: 0 0 0.4rem; display: flex; align-items: center; gap: 6px;
+}
+.box-label .ti { font-size: 1.1rem; }
+
+.remember { border-left-color: var(--remember-edge); background: var(--remember-bg); }
+.remember .box-label { color: var(--remember-ink); }
+.remember p:not(.box-label) { font-size: 1.1rem; font-weight: 600; }
+
+.safety { border-left-color: var(--safety-edge); background: var(--safety-bg); border: 2px solid var(--safety-edge); border-left-width: 6px; }
+.safety .box-label { color: var(--safety-ink); }
+
+.challenge { border-left-color: var(--challenge-edge); background: var(--challenge-bg); }
+.challenge .box-label { color: var(--challenge-ink); }
+
+.teacher-note { border-left-color: var(--teacher-edge); background: var(--teacher-bg); border-style: dashed; border-width: 1px 1px 1px 5px; border-color: var(--teacher-edge); }
+.teacher-note .box-label { color: var(--teacher-ink); }
+
+details.dark { padding: 0; }
+details.dark > summary {
+  list-style: none; cursor: pointer; font-weight: 650;
+  display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0.6rem 1rem;
+}
+details.dark > summary::-webkit-details-marker { display: none; }
+details.dark > summary::after { content: "+"; content: "+" / ""; margin-left: auto; font-size: 1.3rem; line-height: 1; color: var(--text-2); }
+details.dark[open] > summary::after { content: "−"; content: "−" / ""; }
+.dark-body { padding: 0 1rem 0.1rem; }
+
+/* ---------- Outside the book */
+
+.outside {
+  font-size: 0.875rem; color: var(--text-2);
+  border-top: 1px dashed var(--border-strong); border-bottom: 1px dashed var(--border-strong);
+  padding: 0.6rem 0 0.1rem; margin: 1.25rem 0;
+}
+.outside p { margin-bottom: 0.5rem; }
+.outside-label { color: var(--text-2); font-weight: 700; }
+
+/* ---------- Steps */
+
+.steps {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 0.75rem 1rem 0.25rem; margin: 1.25rem 0;
+}
+.steps ol { list-style: none; counter-reset: step; padding-left: 0; }
+.steps li { counter-increment: step; position: relative; padding-left: 2.4rem; margin: 0.6rem 0; }
+.steps li::before {
+  content: counter(step); position: absolute; left: 0; top: 0.05rem;
+  width: 1.7rem; height: 1.7rem; border-radius: 50%;
+  background: var(--accent); color: var(--bg);
+  font-weight: 700; font-size: 0.85rem; display: grid; place-items: center;
+}
+
+/* ---------- Predict */
+
+.predict {
+  border-left: 5px solid var(--predict-edge); background: var(--predict-bg);
+  border-radius: var(--radius); padding: 0.85rem 1rem; margin: 1.25rem 0;
+}
+.predict-q { font-weight: 600; margin-bottom: 0.6rem; }
+.tag {
+  display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--bg); background: var(--predict-edge); border-radius: 999px; padding: 1px 9px; margin-right: 4px;
+  vertical-align: 2px;
+}
+.predict summary {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 6px 14px;
+  border: 1px solid var(--border-strong); border-radius: 8px; background: var(--bg);
+  cursor: pointer; font-weight: 600; font-size: 0.95rem; list-style: none;
+}
+.predict summary::-webkit-details-marker { display: none; }
+.predict summary::before { content: "▸"; content: "▸" / ""; margin-right: 8px; color: var(--text-2); }
+.predict details[open] summary::before { content: "▾"; content: "▾" / ""; }
+.predict summary:hover { border-color: var(--text); }
+.result { margin-top: 0.75rem; }
+.result p:last-child { margin-bottom: 0; }
+
+/* ---------- Graph paper (behind every drawing; stays light in dark mode, like real paper) */
+
+.paper {
+  background-color: #fbf8ef;
+  background-image:
+    linear-gradient(#dde8f1 1px, transparent 1px),
+    linear-gradient(90deg, #dde8f1 1px, transparent 1px);
+  background-size: 16px 16px;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+
+/* ---------- The parts: a drawing, the name, what it looks like */
+
+.parts-tools { margin: 1rem 0 0; }
+.spotlight-start {
+  font: inherit; font-weight: 650; font-size: 1rem; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 8px 18px;
+  color: var(--bg); background: var(--accent); border: 1px solid var(--accent); border-radius: 10px;
+}
+.spotlight-start:hover { filter: brightness(1.1); }
+.spotlight-start .ti { font-size: 1.25rem; }
+
+.parts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr)); gap: 1rem; margin: 1rem 0 1.5rem; }
+.part {
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg);
+  overflow: hidden; display: flex; flex-direction: column;
+}
+.part-art {
+  position: relative; display: block; width: 100%; padding: 6px; margin: 0;
+  border: 0; border-bottom: 1px solid var(--border); cursor: zoom-in;
+}
+.part-art img { display: block; width: 100%; height: auto; }
+.part-n {
+  position: absolute; top: 8px; left: 8px; width: 1.9rem; height: 1.9rem; border-radius: 50%;
+  display: grid; place-items: center; font-weight: 700; font-size: 0.9rem;
+  color: #2f2e2b; background: #ffffff; border: 2px solid #2f2e2b;
+}
+.part-text { padding: 0.7rem 0.95rem 0.5rem; }
+.part-name { font-size: 1.2rem; margin: 0 0 0.35rem; }
+.part-desc p { color: var(--text-2); font-size: 0.95rem; margin: 0 0 0.5rem; }
+
+/* ---------- A row of small drawings with captions */
+
+.pictures { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(11rem, 100%), 1fr)); gap: 0.75rem; margin: 1rem 0 1.25rem; }
+.picture { margin: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.picture .paper { padding: 4px; }
+.picture img { display: block; width: 100%; height: auto; }
+.picture figcaption { padding: 0.4rem 0.7rem; font-size: 0.9rem; color: var(--text-2); border-top: 1px solid var(--border); }
+
+/* ---------- The parts, one at a time (full screen, for the projector) */
+
+dialog.spotlight {
+  width: 100vw; height: 100vh; max-width: 100vw; max-height: 100vh;
+  margin: 0; padding: 0; border: 0; background: var(--bg); color: var(--text);
+}
+dialog.spotlight[open] {
+  display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); grid-template-rows: minmax(0, 1fr) auto;
+}
+dialog.spotlight::backdrop { background: rgba(0, 0, 0, 0.6); }
+.spot-art { display: grid; place-items: center; padding: 2rem; min-height: 0; }
+.spot-art img { width: 100%; height: 100%; max-height: calc(100vh - 9rem); object-fit: contain; }
+.spot-text { align-self: center; padding: 2rem 2.5rem; overflow-y: auto; max-height: calc(100vh - 6rem); }
+.spot-count { color: var(--text-2); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.9rem; margin: 0; }
+h2.spot-name { font-size: 2.6rem; margin: 0.3rem 0 1rem; padding: 0; border: 0; }
+.spot-desc p { font-size: 1.4rem; line-height: 1.5; }
+.spot-nav {
+  grid-column: 1 / -1; display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;
+  padding: 0.9rem; border-top: 1px solid var(--border); background: var(--surface);
+}
+.spot-nav button {
+  font: inherit; font-size: 1.1rem; font-weight: 600; min-height: 52px; padding: 0.5rem 1.4rem; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--text); background: var(--bg); border: 1px solid var(--border-strong); border-radius: 10px;
+}
+.spot-nav .spot-next { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+.spot-nav button:disabled { opacity: 0.4; cursor: default; }
+@media (max-width: 760px), (orientation: portrait) {
+  dialog.spotlight[open] { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; }
+  .spot-art { padding: 1rem; }
+  .spot-art img { max-height: 42vh; }
+  .spot-text { align-self: start; padding: 0.5rem 1.25rem 1rem; max-height: none; }
+  h2.spot-name { font-size: 1.9rem; }
+  .spot-desc p { font-size: 1.15rem; }
+}
+
+/* ---------- Checklist */
+
+.checklist { list-style: none; padding-left: 0; }
+.checklist li { margin: 0.25rem 0; }
+.checklist label { display: flex; align-items: flex-start; gap: 0.75rem; min-height: 44px; padding: 0.4rem 0; cursor: pointer; }
+.checklist input { width: 1.3rem; height: 1.3rem; margin: 0.15rem 0 0; flex: none; accent-color: var(--accent); }
+
+/* ---------- Tables, and the printable sheet */
+
+table { border-collapse: collapse; width: 100%; margin: 0 0 1.25rem; font-size: 0.95rem; }
+th, td { border: 1px solid var(--border-strong); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+td { overflow-wrap: break-word; }
+th { background: var(--surface); }
+
+.printable {
+  border: 1px solid var(--border-strong); border-radius: var(--radius);
+  padding: 1rem; margin: 1.25rem 0; background: var(--bg);
+}
+.printable td { height: 2.4rem; }
+@media screen { .printable { overflow-x: auto; } }   /* very narrow screens: the sheet scrolls, not the page */
+.printable p { line-height: 2.4; }
+/* Boxes to type in: a group number, names. Nothing typed is saved or sent anywhere. */
+.blank {
+  font: inherit; color: var(--text); background: transparent;
+  border: 0; border-bottom: 2px solid var(--border-strong); border-radius: 0;
+  padding: 2px 4px; margin-left: 4px; vertical-align: baseline;
+}
+.blank:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+.blank-short { width: 5rem; }
+.blank-long { width: min(22rem, 70%); }
+.printable .checklist li { margin: 0; padding: 0.15rem 0; break-inside: avoid; }
+@media (min-width: 640px) { .printable .checklist { columns: 2; column-gap: 1.5rem; } }
+
+@media (max-width: 480px) {
+  table { font-size: 0.85rem; }
+  th, td { padding: 0.35rem 0.4rem; }
+  th { font-size: 0.8rem; }
+  .printable { padding: 0.75rem 0.6rem; }
+  .projector-toggle { display: none; }   /* nobody projects from a phone */
+}
+
+/* ---------- Widgets (the animated breadboards) */
+
+.widget { margin: 1.25rem 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
+.widget-frame { display: block; width: 100%; height: 46rem; border: 0; }
+.widget-print { display: none; }   /* printed in place of the animation */
+
+/* ---------- Home page */
+
+.sessions { list-style: none; padding: 0; margin: 1.5rem 0; }
+.session {
+  display: flex; align-items: center; gap: 0.5rem 1rem; flex-wrap: wrap;
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface);
+  padding: 0.75rem 1rem; margin: 0.6rem 0;
+}
+.session-date { font-weight: 700; color: var(--text-2); min-width: 4.5rem; }
+.session a { font-weight: 650; font-size: 1.1rem; flex: 1 1 14rem; }
+.chip { font-size: 0.75rem; font-weight: 700; border-radius: 999px; padding: 2px 10px; letter-spacing: 0.02em; }
+.chip-published { background: var(--published-bg); color: var(--published-ink); }
+.chip-draft { background: var(--draft-bg); color: var(--draft-ink); }
+.home-note { color: var(--text-2); }
+
+/* ---------- Footer */
+
+.site-foot { border-top: 1px solid var(--border); color: var(--text-2); font-size: 0.85rem; padding: 1rem 0 2rem; }
+.site-foot p { margin-top: 0; margin-bottom: 0; }
+
+/* ---------- Motion */
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+}
+
+/* ---------- Print: steps, safety, checklists and the inventory sheet stay; widgets and buttons go */
+
+@page { margin: 0.6in; }
+
+@media print {
+  html, html.projector { font-size: 11pt; }
+  body { background: #fff; color: #000; }
+  .site-bar, .skip, .widget-frame, .projector-toggle, .sim, .site-foot { display: none !important; }
+  .widget { border: 1px dashed #000; border-radius: 6px; background: none; padding: 0.25cm 0.35cm; margin: 0.3cm 0; break-inside: avoid; }
+  .widget-print { display: block; margin: 0; font-style: italic; }
+  main { max-width: none; padding: 0; }
+  a { color: inherit; text-decoration: none; }
+  h2 { break-after: avoid; }
+  .box, .steps, .predict, .part, .picture, .checklist li, tr { break-inside: avoid; }
+  .predict summary, .parts-tools, dialog.spotlight { display: none !important; }
+  .part-art:hover img { transform: none; }
+  details.dark > summary::after, details.dark[open] > summary::after { content: none; }
+  .printable { break-before: page; border: none; padding: 0; margin: 0; font-size: 10pt; line-height: 1.3; }
+  .printable table { margin-bottom: 0.4cm; }
+  .printable th, .printable td { height: auto; padding: 0.11cm 0.2cm; }
+  .printable td:empty { height: 0.62cm; }
+  .printable p { line-height: 2.2; margin-bottom: 0.2cm; }
+  .blank { border-bottom: 1px solid #000; color: #000; }
+  .printable .checklist { columns: 2; column-gap: 0.8cm; }
+  .printable .checklist label { min-height: 0; padding: 0.12cm 0; }
+  .printable .checklist input { width: 0.45cm; height: 0.45cm; }
+  th, td { border-color: #000; }
+  .box, .predict, .steps, .part-n, .tag, .chip, .page-meta { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

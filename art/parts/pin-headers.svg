@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+<title>Pin headers</title>
+<defs>
+  <filter id="pencil" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="17" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</defs>
+<g filter="url(#pencil)" stroke="#2f2e2b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- a strip of 14 pins -->
+  <g transform="translate(5 0) rotate(-2 154 60)">
+    <path d="M25.5 54.5 V98 M45.5 54.5 V98 M65.5 54.5 V98 M85.5 54.5 V98 M105.5 54.5 V98 M125.5 54.5 V98 M145.5 54.5 V98 M165.5 54.5 V98 M185.5 54.5 V98 M205.5 54.5 V98 M225.5 54.5 V98 M245.5 54.5 V98 M265.5 54.5 V98 M285.5 54.5 V98" stroke="#8d8b85" stroke-width="3.2" fill="none"/>
+    <path d="M12 40 L292 40 L299 33 L19 33 Z" fill="#4a4945"/>
+    <path d="M292 40 L299 33 L299 51 L292 58 Z" fill="#2c2c2a"/>
+    <path d="M12 40 L292 40 L292 58 L12 58 Z" fill="#3b3a37"/>
+    <path d="M19 46 C27 44.8 37 44.2 47 44.2" stroke="#ffffff" stroke-width="2.4" fill="none" opacity="0.85"/>
+    <path d="M25.5 36.5 V20 M45.5 36.5 V20 M65.5 36.5 V20 M85.5 36.5 V20 M105.5 36.5 V20 M125.5 36.5 V20 M145.5 36.5 V20 M165.5 36.5 V20 M185.5 36.5 V20 M205.5 36.5 V20 M225.5 36.5 V20 M245.5 36.5 V20 M265.5 36.5 V20 M285.5 36.5 V20" stroke="#8d8b85" stroke-width="3.2" fill="none"/>
+  </g>
+  <!-- a strip of 12 pins -->
+  <g transform="rotate(2.5 176 158)">
+    <path d="M65.5 154.5 V198 M85.5 154.5 V198 M105.5 154.5 V198 M125.5 154.5 V198 M145.5 154.5 V198 M165.5 154.5 V198 M185.5 154.5 V198 M205.5 154.5 V198 M225.5 154.5 V198 M245.5 154.5 V198 M265.5 154.5 V198 M285.5 154.5 V198" stroke="#8d8b85" stroke-width="3.2" fill="none"/>
+    <path d="M52 140 L292 140 L299 133 L59 133 Z" fill="#4a4945"/>
+    <path d="M292 140 L299 133 L299 151 L292 158 Z" fill="#2c2c2a"/>
+    <path d="M52 140 L292 140 L292 158 L52 158 Z" fill="#3b3a37"/>
+    <path d="M59 146 C67 144.8 77 144.2 87 144.2" stroke="#ffffff" stroke-width="2.4" fill="none" opacity="0.85"/>
+    <path d="M65.5 136.5 V120 M85.5 136.5 V120 M105.5 136.5 V120 M125.5 136.5 V120 M145.5 136.5 V120 M165.5 136.5 V120 M185.5 136.5 V120 M205.5 136.5 V120 M225.5 136.5 V120 M245.5 136.5 V120 M265.5 136.5 V120 M285.5 136.5 V120" stroke="#8d8b85" stroke-width="3.2" fill="none"/>
+  </g>
+</g>
+</svg>

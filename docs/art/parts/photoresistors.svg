@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+<title>Photoresistors (there are two)</title>
+<defs>
+  <filter id="pencil" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="23" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</defs>
+<g filter="url(#pencil)" stroke="#2f2e2b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- photoresistor one -->
+  <g transform="rotate(-5 106 204)">
+    <path d="M89 82 V204 M123 82 V204" stroke="#8d8b85" stroke-width="2.8" fill="none"/>
+    <circle cx="106" cy="82" r="42" fill="#fbf1d2"/>
+    <path d="M89.7 56.2 H122.3 C128.1 56.2 135.7 64.8 129.9 64.8 H82.1 C76.3 64.8 72.6 73.4 78.4 73.4 H133.6 C139.4 73.4 140.5 82 134.7 82 H77.3 C71.5 82 72.6 90.6 78.4 90.6 H133.6 C139.4 90.6 135.7 99.2 129.9 99.2 H82.1 C76.3 99.2 83.9 107.8 89.7 107.8 H122.3" stroke="#a5523a" stroke-width="3" fill="none"/>
+    <path d="M69.9 73.6 A37 37 0 0 1 91.7 48.4" stroke="#ffffff" stroke-width="3.2" fill="none" opacity="0.85"/>
+  </g>
+  <!-- photoresistor two -->
+  <g transform="rotate(5 214 204)">
+    <path d="M197 82 V204 M231 82 V204" stroke="#8d8b85" stroke-width="2.8" fill="none"/>
+    <circle cx="214" cy="82" r="42" fill="#fbf1d2"/>
+    <path d="M197.7 56.2 H230.3 C236.1 56.2 243.7 64.8 237.9 64.8 H190.1 C184.3 64.8 180.6 73.4 186.4 73.4 H241.6 C247.4 73.4 248.5 82 242.7 82 H185.3 C179.5 82 180.6 90.6 186.4 90.6 H241.6 C247.4 90.6 243.7 99.2 237.9 99.2 H190.1 C184.3 99.2 191.9 107.8 197.7 107.8 H230.3" stroke="#a5523a" stroke-width="3" fill="none"/>
+    <path d="M177.9 73.6 A37 37 0 0 1 199.7 48.4" stroke="#ffffff" stroke-width="3.2" fill="none" opacity="0.85"/>
+  </g>
+</g>
+</svg>

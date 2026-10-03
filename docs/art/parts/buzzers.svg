@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+<title>Buzzers (one active, one passive)</title>
+<defs>
+  <filter id="pencil" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="17" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</defs>
+<g filter="url(#pencil)" stroke="#2f2e2b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- buzzer standing up -->
+  <g>
+    <path d="M49 124 V204 M91 124 V204" stroke="#8d8b85" stroke-width="3" fill="none"/>
+    <path d="M28 70 V124 A42 14 0 0 0 112 124 V70 Z" fill="#3b3a37"/>
+    <ellipse cx="70" cy="70" rx="42" ry="14" fill="#55534f"/>
+    <path d="M42.3 91 C41.3 102 41.3 110 42.3 118" stroke="#ffffff" stroke-width="3.2" fill="none" opacity="0.85"/>
+  </g>
+  <!-- buzzer seen from underneath -->
+  <g transform="translate(184 98) rotate(-6)">
+    <path d="M-42 25 V-25 A42 19 0 0 1 42 -25 V25 Z" fill="#3b3a37"/>
+    <ellipse cx="0" cy="25" rx="42" ry="19" fill="#3b3a37"/>
+    <ellipse cx="0" cy="25" rx="38.5" ry="16.5" fill="#4f9a58"/>
+    <path d="M-20 25 V91 M20 25 V91" stroke="#8d8b85" stroke-width="3" fill="none"/>
+    <g fill="#b8b6ae" stroke-width="1.6"><circle cx="-20" cy="25" r="4"/><circle cx="20" cy="25" r="4"/></g>
+    <path d="M-27.7 -27.5 C-28.7 -19 -28.7 -11 -27.7 -3" stroke="#ffffff" stroke-width="3.2" fill="none" opacity="0.85"/>
+  </g>
+  <!-- label arrow -->
+  <path d="M256 137 C252 120 238 111 222 111.5 C210 112 198 113.5 190.2 118.5" fill="none" stroke-width="1.6"/>
+  <path d="M192.8 112 L190.2 118.5 L197.2 118.8" fill="none" stroke-width="1.6"/>
+</g>
+<g font-family="'Chalkboard SE', 'Comic Sans MS', 'Segoe Print', Noteworthy, cursive" font-size="17" fill="#2f2e2b">
+  <text x="250" y="154">green</text>
+  <text x="250" y="173">board</text>
+</g>
+</svg>

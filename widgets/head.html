@@ -1,0 +1,26 @@
+<h2 class="sr-only">{{SR}}</h2>
+<style>
+.flow{fill:none;stroke:#7F77DD;stroke-width:3.4;stroke-linecap:round;stroke-dasharray:0 10}
+#rg{transform-box:fill-box;transform-origin:center}
+@media (prefers-reduced-motion:no-preference){
+.pin{animation:drop .55s ease-out both}.lit{animation:fin .5s ease-out}
+.flow{animation:fl var(--d,.5s) linear infinite}.ring{animation:ring .4s ease-out}}
+@keyframes drop{from{opacity:0;transform:translateY(-18px)}}
+@keyframes fin{from{opacity:0}}
+@keyframes fl{to{stroke-dashoffset:-20}}
+@keyframes ring{from{opacity:.9;transform:scale(1)}to{opacity:0;transform:scale(1.6)}}
+</style>
+<svg width="100%" viewBox="0 0 680 436" role="img"><title>{{TITLE}}</title><desc>{{DESC}}</desc>
+<g id="gb"></g><g id="gh"></g><g id="gH"></g><g id="gA"></g><g id="gp"></g><g id="gf"></g><g id="gx"></g></svg>
+<p style="font-size:12px;color:var(--text-secondary);margin:4px 0 0">Bent leg = long leg (+ side) · purple dots = the current's path, + to − · shaded = the strips that pass the current along · orange dashed = test wire</p>
+<div style="display:flex;align-items:center;gap:8px;margin:12px 0 8px;flex-wrap:wrap">
+<button id="bk" aria-label="Previous step"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
+<button id="nx">Next <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+<button id="pl"><i class="ti ti-player-play" aria-hidden="true"></i> Play the build</button>
+<span id="ct" style="margin-left:auto;font-size:13px;color:var(--text-secondary)"></span></div>
+<div style="height:3px;background:var(--border);border-radius:2px"><div id="pb" style="height:3px;width:0;background:var(--text-accent);border-radius:2px;transition:width .3s"></div></div>
+<p id="tt" style="font-weight:500;margin:12px 0 2px"></p>
+<p id="dd" style="margin:0;color:var(--text-secondary);line-height:1.6"></p>
+<div id="ix" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px"></div>
+<p id="ro" style="font-family:var(--font-mono);font-size:13px;margin:8px 0 0"></p>
+<p id="wy" style="margin:8px 0 0;line-height:1.6"></p>

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}} · MTEC 150</title>
+{{robots}}<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="{{icons_css}}">
+<link rel="stylesheet" href="style.css">
+<script>try{if(sessionStorage.getItem('mtec-projector')==='1')document.documentElement.classList.add('projector')}catch(e){}</script>
+<script src="site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the page</a>
+<header class="site-bar">
+<div class="bar-inner">
+<a class="home" href="index.html"><i class="ti ti-home" aria-hidden="true"></i> {{course}}</a>
+<span class="teacher-badge teacher-only">Teacher view</span>
+<button class="projector-toggle" type="button" aria-pressed="false"><i class="ti ti-presentation" aria-hidden="true"></i> Projector</button>
+</div>
+</header>
+<main id="main">
+{{head}}
+
+{{content}}
+</main>
+<footer class="site-foot">
+<p>{{footer}}</p>
+</footer>
+</body>
+</html>

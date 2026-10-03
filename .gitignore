@@ -1,0 +1,9 @@
+handoff/
+.DS_Store
+.claude/
+checks/
+__pycache__/
+widgets/part*.html
+widgets/test*.html
+widgets/shots/
+docs.new/

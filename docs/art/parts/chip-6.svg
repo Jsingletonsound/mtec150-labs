@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+<title>Chip with 6 legs</title>
+<defs>
+  <filter id="pencil" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="13" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</defs>
+<g filter="url(#pencil)" stroke="#2f2e2b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- 3 legs along the far side: we only see where they bend over -->
+  <path d="M114 51 L122.5 21 M167.2 51 L175.6 21 M220.3 51 L228.8 21" stroke="#8d8b85" stroke-width="10" fill="none"/>
+  <!-- the black body: top, front and end, seen from a little above -->
+  <path d="M58 119 L80 41 H260 L238 119 Z" fill="#4a4945"/>
+  <path d="M58 119 H238 V153 H58 Z" fill="#3b3a37"/>
+  <path d="M238 119 L260 41 V75 L238 153 Z" fill="#2c2c2a"/>
+  <!-- the small dot at one end -->
+  <ellipse cx="89.3" cy="90.9" rx="8" ry="6" fill="#6b6964" stroke-width="1.8"/>
+  <path d="M161.4 109.6 C173.4 107.6 187.4 106.6 201.4 106.6" stroke="#ffffff" stroke-width="3" fill="none" opacity="0.85"/>
+  <!-- 3 legs along the near side -->
+  <path d="M94.8 136 V168 M148 136 V168 M201.2 136 V168" stroke="#8d8b85" stroke-width="10" fill="none"/>
+  <path d="M94.8 168 V202 M148 168 V202 M201.2 168 V202" stroke="#8d8b85" stroke-width="3.2" fill="none"/>
+</g>
+</svg>

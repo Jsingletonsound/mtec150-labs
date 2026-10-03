@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+<title>Jumper wires</title>
+<defs>
+  <filter id="pencil" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="41" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</defs>
+<g filter="url(#pencil)" stroke="#2f2e2b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- three loose wires; a plastic sleeve and a metal pin at each end -->
+  <path d="M64 44 C150 20 150 150 250 128" stroke-width="10" fill="none"/>
+  <path d="M64 44 C150 20 150 150 250 128" stroke="#e0483e" stroke-width="5.6" fill="none"/>
+  <g transform="translate(64 44) rotate(164.4)"><path d="M23 0 H38" stroke="#8d8b85" stroke-width="3.2"/><rect x="-2" y="-5.5" width="24" height="11" rx="2" fill="#3b3a37"/><path d="M3 -3.1 H18" stroke="#ffffff" stroke-width="1.6" opacity="0.5"/></g>
+  <g transform="translate(250 128) rotate(-12.4)"><path d="M23 0 H38" stroke="#8d8b85" stroke-width="3.2"/><rect x="-2" y="-5.5" width="24" height="11" rx="2" fill="#3b3a37"/><path d="M3 -3.1 H18" stroke="#ffffff" stroke-width="1.6" opacity="0.5"/></g>
+  <path d="M58 118 C140 172 196 40 262 62" stroke-width="10" fill="none"/>
+  <path d="M58 118 C140 172 196 40 262 62" stroke="#f2cc3c" stroke-width="5.6" fill="none"/>
+  <g transform="translate(58 118) rotate(-146.6)"><path d="M23 0 H38" stroke="#8d8b85" stroke-width="3.2"/><rect x="-2" y="-5.5" width="24" height="11" rx="2" fill="#3b3a37"/><path d="M3 -3.1 H18" stroke="#ffffff" stroke-width="1.6" opacity="0.5"/></g>
+  <g transform="translate(262 62) rotate(18.4)"><path d="M23 0 H38" stroke="#8d8b85" stroke-width="3.2"/><rect x="-2" y="-5.5" width="24" height="11" rx="2" fill="#3b3a37"/><path d="M3 -3.1 H18" stroke="#ffffff" stroke-width="1.6" opacity="0.5"/></g>
+  <path d="M66 180 C150 150 196 212 258 186" stroke-width="10" fill="none"/>
+  <path d="M66 180 C150 150 196 212 258 186" stroke="#3b3a37" stroke-width="5.6" fill="none"/>
+  <g transform="translate(66 180) rotate(160.3)"><path d="M23 0 H38" stroke="#8d8b85" stroke-width="3.2"/><rect x="-2" y="-5.5" width="24" height="11" rx="2" fill="#3b3a37"/><path d="M3 -3.1 H18" stroke="#ffffff" stroke-width="1.6" opacity="0.5"/></g>
+  <g transform="translate(258 186) rotate(-22.8)"><path d="M23 0 H38" stroke="#8d8b85" stroke-width="3.2"/><rect x="-2" y="-5.5" width="24" height="11" rx="2" fill="#3b3a37"/><path d="M3 -3.1 H18" stroke="#ffffff" stroke-width="1.6" opacity="0.5"/></g>
+  <path d="M261.5 39.5 Q293 37.5 293 66.5" stroke-width="1.6" fill="none"/>
+  <path d="M296.7 59.4 L293 66.5 L288.7 59.8" stroke-width="1.6" fill="none"/>
+</g>
+<g font-family="'Chalkboard SE', 'Comic Sans MS', 'Segoe Print', Noteworthy, cursive" font-size="16" fill="#2f2e2b">
+  <text x="257.5" y="43.5" text-anchor="end">metal pin</text>
+</g>
+</svg>

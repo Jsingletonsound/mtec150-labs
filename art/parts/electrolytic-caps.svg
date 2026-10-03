@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+<title>Electrolytic capacitors, 10 µF and 100 µF</title>
+<defs>
+  <filter id="pencil" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="11" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</defs>
+<g filter="url(#pencil)" stroke="#2f2e2b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- the smaller can -->
+  <g>
+    <path d="M76 154 V204 M96 154 V189" stroke="#8d8b85" stroke-width="3" fill="none"/>
+    <path d="M58 66 V154 A28 8.5 0 0 0 114 154 V66 Z" fill="#3b3a37"/>
+    <path d="M94.4 75.6 A28 8.5 0 0 0 106.7 73.2 V158.2 A28 8.5 0 0 1 94.4 160.6 Z" fill="#b8b6ae" stroke="none"/>
+    <ellipse cx="86" cy="66" rx="28" ry="8.5" fill="#55534f"/>
+    <path d="M68.6 82.5 C67.1 102.5 67.1 114.5 68.6 126.5" stroke="#ffffff" stroke-width="3.2" fill="none" opacity="0.85"/>
+  </g>
+  <!-- the bigger can -->
+  <g>
+    <path d="M168 154 V204 M196 154 V189" stroke="#8d8b85" stroke-width="3" fill="none"/>
+    <path d="M144 42 V154 A38 11 0 0 0 220 154 V42 Z" fill="#3b3a37"/>
+    <path d="M193.4 54 A38 11 0 0 0 210.1 50.9 V159.9 A38 11 0 0 1 193.4 163 Z" fill="#b8b6ae" stroke="none"/>
+    <ellipse cx="182" cy="42" rx="38" ry="11" fill="#55534f"/>
+    <path d="M158.4 61 C156.9 81 156.9 93 158.4 105" stroke="#ffffff" stroke-width="3.2" fill="none" opacity="0.85"/>
+  </g>
+  <!-- label arrow -->
+  <path d="M250 74 C236 76 220 84 205 98" fill="none" stroke-width="1.6"/>
+  <path d="M207.8 89.3 L205 98 L213.9 95.8" fill="none" stroke-width="1.6"/>
+</g>
+<g font-family="'Chalkboard SE', 'Comic Sans MS', 'Segoe Print', Noteworthy, cursive" font-size="17" fill="#2f2e2b">
+  <text x="246" y="68">stripe</text>
+</g>
+</svg>

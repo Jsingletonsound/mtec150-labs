@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220">
+<title>Chip with 16 legs</title>
+<defs>
+  <filter id="pencil" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="3" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</defs>
+<g filter="url(#pencil)" stroke="#2f2e2b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- 8 legs along the far side: we only see where they bend over -->
+  <path d="M68.5 69 L72.5 52 M97.5 69 L101.5 52 M126.5 69 L130.5 52 M155.5 69 L159.5 52 M184.5 69 L188.5 52 M213.5 69 L217.5 52 M242.5 69 L246.5 52 M271.5 69 L275.5 52" stroke="#8d8b85" stroke-width="7" fill="none"/>
+  <!-- the black body: top, front and end, seen from a little above -->
+  <path d="M40 121 L55 65 H285 L270 121 Z" fill="#4b4945"/>
+  <path d="M40 121 H270 V140 H40 Z" fill="#353430"/>
+  <path d="M270 121 L285 65 V84 L270 140 Z" fill="#2e2d2a"/>
+  <!-- the notch at one end -->
+  <path d="M43.9 106.5 A12.5 12.5 0 0 0 50.6 81.5" fill="#2a2927" stroke="#8a8882" stroke-width="1.8"/>
+  <path d="M76 110 C88 108 102 107 116 107" stroke="#ffffff" stroke-width="3" fill="none" opacity="0.85"/>
+  <!-- 8 legs along the near side -->
+  <path d="M53.5 130 V149 M82.5 130 V149 M111.5 130 V149 M140.5 130 V149 M169.5 130 V149 M198.5 130 V149 M227.5 130 V149 M256.5 130 V149" stroke="#8d8b85" stroke-width="7" fill="none"/>
+  <path d="M53.5 149 V169 M82.5 149 V169 M111.5 149 V169 M140.5 149 V169 M169.5 149 V169 M198.5 149 V169 M227.5 149 V169 M256.5 149 V169" stroke="#8d8b85" stroke-width="3.2" fill="none"/>
+</g>
+</svg>
