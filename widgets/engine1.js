@@ -4,7 +4,9 @@ const P=h=>{if(Array.isArray(h))return h;const m=/^([+-]?)(\d+)([a-j]?)$/.exec(h
 function E(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
 function T(p,x,y,s,f){const e=E('text',{x,y,class:'ts','text-anchor':'middle','dominant-baseline':'central',style:'fill:'+f},p);e.textContent=s;return e}
 const BC={k:'#2C2C2A',n:'#7B4A26',r:'#D83A34',o:'#EF7F1A',g:'#3B9E4A'};
-const BANDS={'330':'ookkn','1K':'nkkng','2K':'rkknn','5.1K':'gnknn','10K':'nkkrn','100K':'nkkon'};
+// LED colors: [unlit, fully lit, glow, rim]
+const LC={r:[[232,176,172],[242,60,50],'#FF6A55','#A32D2D'],g:[[188,222,190],[52,178,82],'#5ED36F','#2E7D3A'],b:[[186,206,236],[52,118,232],'#6FA8FF','#1E4F9A']};
+const BANDS={'330':'ookkn','1K':'nkknn','2K':'rkknn','5.1K':'gnknn','10K':'nkkrn','100K':'nkkon'};
 const br=I=>I>0?Math.max(.04,Math.min(1,Math.log10(I/.05)/Math.log10(21.2/.05))):0;
 const mix=(a,b,t)=>'rgb('+a.map((v,i)=>Math.round(v+(b[i]-v)*t)).join(',')+')';
 const D=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
@@ -16,7 +18,7 @@ E('line',{x1:130,y1:84,x2:660,y2:84,stroke:'#378ADD','stroke-width':2},g);
 E('line',{x1:96,y1:94,x2:668,y2:94,stroke:'#D3D1C7'},g);
 E('rect',{x:96,y:262,width:572,height:16,fill:'#E4E2DA'},g);
 T(h,646,42,'+','#A32D2D');T(h,646,68,'−','#185FA5');
-[60,55,50].forEach(n=>T(h,X(n),108,n,'#5F5E5A'));
+for(let n=61;n>=48;n--)T($('gN'),X(n),108,n,'#2C2C2A').setAttribute('class','ts sn');
 for(const r in RY)T(h,124,RY[r],r,'#5F5E5A');
 const q=E('g',{fill:'#3d3d3a'},h);
 for(let n=61;n>=48;n--)[42,68,...Object.values(RY)].forEach(y=>E('rect',{x:X(n)-3.5,y:y-3.5,width:7,height:7},q))}

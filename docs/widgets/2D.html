@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animated breadboard: Lab 2 D, two 1Ks side by side</title>
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.48.0/dist/tabler-icons.min.css">
+<style>
+/* The deck's lettering, from the site's own font files (docs/fonts). */
+@font-face { font-family: "MTEC Notebook Hand"; src: url("../fonts/MTECNotebookHand-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "MTEC Notebook Hand"; src: url("../fonts/MTECNotebookHand-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Atkinson Hyperlegible"; src: url("../fonts/AtkinsonHyperlegible-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Atkinson Hyperlegible"; src: url("../fonts/AtkinsonHyperlegible-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+/* The page around one animated breadboard. The colors match site/style.css.
+   The board itself keeps its fixed "physical" colors in light and dark mode, on purpose. */
+:root {
+  --text-primary: #1f1e1d;
+  --text-secondary: #55534d;
+  --text-accent: #185fa5;
+  --border: #d9d6cd;
+  --border-strong: #8a877e;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --bg: #FCFCF9;   /* the page's paper; the page sends its exact color */
+  --button: #ffffff;
+  --button-hover: #ece9e1;
+  --focus: #185fa5;
+  --bench: transparent;
+}
+/* The dark notebook: when the device is in dark mode, or the page sends dark (?look=bench). */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --text-primary: #ecebe6;
+    --text-secondary: #bdbab2;
+    --text-accent: #8ec2f7;
+    --border: #3d3c38;
+    --border-strong: #7d7a72;
+    --bg: #1D1E20;
+    --button: #2e2d2a;
+    --button-hover: #3a3935;
+    --focus: #8ec2f7;
+    --bench: #c9c5bb; /* a light bench behind the board, so the black battery and leads stay visible */
+  }
+}
+:root.dark {
+    --text-primary: #ecebe6;
+    --text-secondary: #bdbab2;
+    --text-accent: #8ec2f7;
+    --border: #3d3c38;
+    --border-strong: #7d7a72;
+    --bg: #1D1E20;
+    --button: #2e2d2a;
+    --button-hover: #3a3935;
+    --focus: #8ec2f7;
+    --bench: #c9c5bb; /* a light bench behind the board, so the black battery and leads stay visible */
+}
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+html.projector { font-size: 20px; }
+body {
+  margin: 0;
+  padding: 12px 14px 16px;
+  display: flow-root;
+  font-family: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--bg);
+}
+svg { display: block; background: var(--bench); border-radius: 8px; }
+.ts { font-size: 12px; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+button {
+  font: inherit;
+  font-family: "MTEC Notebook Hand", "Chalkboard SE", "Comic Sans MS", cursive;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  font-size: 1.1rem;
+  line-height: 1.2;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 2px solid var(--text-primary);
+  border-radius: 18px 5px 16px 6px / 6px 16px 5px 18px;
+  background: var(--button);
+  color: var(--text-primary);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+button:hover { background: var(--button-hover); }
+button:disabled { opacity: 0.4; cursor: default; }
+button:disabled:hover { background: var(--button); }
+button .ti { font-size: 1.1em; vertical-align: -2px; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+input[type="range"] { accent-color: var(--text-accent); min-height: 32px; }
+/* The engine sets a few sizes in pixels; these keep them readable and let the projector setting scale them. */
+svg + p { font-size: 0.8125rem !important; }
+#ro { font-size: 0.875rem !important; }
+#ix label { font-size: 0.875rem !important; }
+/* The deck's look: the step title in hand-lettered caps, the step counter like a kicker,
+   the strip numbers bold. */
+#tt { font-family: "MTEC Notebook Hand", "Chalkboard SE", "Comic Sans MS", cursive; text-transform: uppercase;
+      letter-spacing: 0.04em; font-size: 1.35rem !important; font-weight: 700 !important; line-height: 1.25; margin-top: 14px !important; }
+#ct { font-family: "MTEC Notebook Hand", "Chalkboard SE", "Comic Sans MS", cursive; text-transform: uppercase;
+      letter-spacing: 0.08em; font-size: 1.1rem !important; }
+#dd { font-size: 1.05rem; }
+.sn { font-weight: 700; paint-order: stroke; stroke: #F4F2EC; stroke-width: 4px; stroke-linejoin: round; }
+/* On a phone the board is drawn small: bigger strip numbers and seat letters. */
+@media (max-width: 480px) { .ts { font-size: 20px; } }
+@media (prefers-reduced-motion: reduce) { #pb { transition: none !important; } }
+</style>
+</head>
+<body>
+<h3 class="sr-only">Animated breadboard: Lab 2 D, two 1Ks side by side</h3>
+<style>
+.flow{fill:none;stroke:#7F77DD;stroke-width:3.4;stroke-linecap:round;stroke-dasharray:0 10}
+#rg{transform-box:fill-box;transform-origin:center}
+@media (prefers-reduced-motion:no-preference){
+.pin{animation:drop .55s ease-out both}.lit{animation:fin .5s ease-out}
+.flow{animation:fl var(--d,.5s) linear infinite}.ring{animation:ring .4s ease-out}}
+@keyframes drop{from{opacity:0;transform:translateY(-18px)}}
+@keyframes fin{from{opacity:0}}
+@keyframes fl{to{stroke-dashoffset:-20}}
+@keyframes ring{from{opacity:.9;transform:scale(1)}to{opacity:0;transform:scale(1.6)}}
+</style>
+<svg width="100%" viewBox="0 0 680 436" role="img"><title>Lab 2 D, two 1Ks side by side</title><desc>Two 1K resistors side by side both feed a red LED: brighter than one 1K.</desc>
+<g id="gb"></g><g id="gh"></g><g id="gH"></g><g id="gA"></g><g id="gp"></g><g id="gf"></g><g id="gx"></g><g id="gN"></g></svg>
+<p style="font-size:12px;color:var(--text-secondary);margin:4px 0 0">Bent leg = long leg (+ side) · purple dots = the current's path, + to − · shaded = the strips that pass the current along · orange dashed = test wire</p>
+<div style="display:flex;align-items:center;gap:8px;margin:12px 0 8px;flex-wrap:wrap">
+<button id="bk" aria-label="Previous step"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
+<button id="nx">Next <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+<button id="pl"><i class="ti ti-player-play" aria-hidden="true"></i> Play the build</button>
+<span id="ct" style="margin-left:auto;font-size:13px;color:var(--text-secondary)"></span></div>
+<div style="height:3px;background:var(--border);border-radius:2px"><div id="pb" style="height:3px;width:0;background:var(--text-accent);border-radius:2px;transition:width .3s"></div></div>
+<p id="tt" style="font-weight:500;margin:12px 0 2px"></p>
+<p id="dd" style="margin:0;color:var(--text-secondary);line-height:1.6"></p>
+<div id="ix" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px"></div>
+<p id="ro" style="font-family:var(--font-mono);font-size:13px;margin:8px 0 0"></p>
+<p id="wy" style="margin:8px 0 0;line-height:1.6"></p>
+<script>
+// Lab 2 (Oct 15), panel D: two 1Ks side by side. NEW 2026-10-09 (Kit Day brief, NEW-2), from scratch
+// (James, 2026-10-12). Kept qualitative for students (p. 31's parallel formula is the lecture's back pocket).
+const PART='D',CROP=312;
+const PT={r:{t:'R',a:'+58',b:'58a',v:'1K'},r2:{t:'R',a:'+59',b:'59a',v:'1K'},j:{t:'W',a:'59b',b:'58b',q:[238,146]},l:{t:'L',a:'58c',k:'57c'},w:{t:'W',a:'57a',b:'-57'}};
+const S=[
+{t:'1. The first 1K',d:'Power off, and the board clear except the − battery jumper. One 1K from the + row above strip 58 into 58a. It hops over the − row.',clr:1,pw:0,add:['r'],hi:['s58']},
+{t:'2. The second 1K, beside it',d:'From the + row above strip 59 into 59a.',add:['r2'],hi:['s59']},
+{t:'3. A short jumper',d:'From 59b to 58b. Now both 1Ks feed strip 58.',add:['j'],hi:['s59','s58']},
+{t:'4. The red LED',d:'Long leg 58c, short leg 57c.',add:['l'],hi:['s58','s57']},
+{t:'5. The black jumper',d:'From 57a to the − row. Predict: brighter or dimmer than first light? (Never put a 330 side by side with another resistor.)',pause:1,add:['w'],hi:['s57']},
+{t:'Power on: brighter',d:'Brighter. The current takes both open paths into strip 58, so more flows in all (p. 20).',pw:1,lit:{l:14},fl:[{p:['B+','R:r','58c'],i:7},{p:['B+','R:r2','W:j','58c'],i:7},{p:['58c','L:l','W:w','B-'],i:14}],hi:['s59','s58']}];
+const NS='http://www.w3.org/2000/svg',$=i=>document.getElementById(i);
+const X=n=>148+36*(61-n),RY={a:126,b:156,c:186,d:216,e:246,f:294,g:324,h:354,i:384,j:414};
+const P=h=>{if(Array.isArray(h))return h;const m=/^([+-]?)(\d+)([a-j]?)$/.exec(h);return[X(+m[2]),m[1]?(m[1]=='+'?42:68):RY[m[3]]]};
+function E(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+function T(p,x,y,s,f){const e=E('text',{x,y,class:'ts','text-anchor':'middle','dominant-baseline':'central',style:'fill:'+f},p);e.textContent=s;return e}
+const BC={k:'#2C2C2A',n:'#7B4A26',r:'#D83A34',o:'#EF7F1A',g:'#3B9E4A'};
+// LED colors: [unlit, fully lit, glow, rim]
+const LC={r:[[232,176,172],[242,60,50],'#FF6A55','#A32D2D'],g:[[188,222,190],[52,178,82],'#5ED36F','#2E7D3A'],b:[[186,206,236],[52,118,232],'#6FA8FF','#1E4F9A']};
+const BANDS={'330':'ookkn','1K':'nkknn','2K':'rkknn','5.1K':'gnknn','10K':'nkkrn','100K':'nkkon'};
+const br=I=>I>0?Math.max(.04,Math.min(1,Math.log10(I/.05)/Math.log10(21.2/.05))):0;
+const mix=(a,b,t)=>'rgb('+a.map((v,i)=>Math.round(v+(b[i]-v)*t)).join(',')+')';
+const D=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
+const LEG={fill:'none',stroke:'#888780','stroke-width':2,'stroke-linecap':'round','stroke-linejoin':'round'};
+function board(){const g=$('gb'),h=$('gH');
+E('rect',{x:96,y:14,width:572,height:416,rx:8,fill:'#F4F2EC',stroke:'#B4B2A9'},g);
+E('line',{x1:130,y1:26,x2:660,y2:26,stroke:'#E24B4A','stroke-width':2},g);
+E('line',{x1:130,y1:84,x2:660,y2:84,stroke:'#378ADD','stroke-width':2},g);
+E('line',{x1:96,y1:94,x2:668,y2:94,stroke:'#D3D1C7'},g);
+E('rect',{x:96,y:262,width:572,height:16,fill:'#E4E2DA'},g);
+T(h,646,42,'+','#A32D2D');T(h,646,68,'−','#185FA5');
+for(let n=61;n>=48;n--)T($('gN'),X(n),108,n,'#2C2C2A').setAttribute('class','ts sn');
+for(const r in RY)T(h,124,RY[r],r,'#5F5E5A');
+const q=E('g',{fill:'#3d3d3a'},h);
+for(let n=61;n>=48;n--)[42,68,...Object.values(RY)].forEach(y=>E('rect',{x:X(n)-3.5,y:y-3.5,width:7,height:7},q))}
+function bat(pw,sw){const g=$('gA');g.innerHTML='';
+E('rect',{x:16,y:160,width:54,height:94,rx:5,fill:'#2C2C2A'},g);
+E('rect',{x:16,y:200,width:54,height:30,fill:'#EF9F27'},g);T(g,43,215,'9 V','#412402');
+E('rect',{x:24,y:153,width:12,height:8,rx:2,fill:'#B4B2A9'},g);E('rect',{x:50,y:153,width:12,height:8,rx:2,fill:'#B4B2A9'},g);
+const L=y=>y==42&&!pw?[-10,-20]:[0,0];
+const lead=(x,y,c)=>{const[dx,dy]=L(y);E('path',{d:`M${x} 156V${y+dy}H${78+dx}`,fill:'none',stroke:c,'stroke-width':3,'stroke-linejoin':'round'},g)};
+lead(56,sw?42:68,'#2C2C2A');lead(30,sw?68:42,'#E24B4A');
+[68,42].forEach(y=>{const[dx,dy]=L(y),j=E('g',{transform:`translate(${dx} ${dy})`},g);
+E('line',{x1:92,y1:y,x2:128,y2:y,stroke:'#1D9E75','stroke-width':4,'stroke-linecap':'round'},j);
+E('rect',{x:126,y:y-4,width:16,height:8,rx:2,fill:'#2C2C2A'},j);
+E('line',{x1:142,y1:y,x2:148,y2:y,stroke:'#888780','stroke-width':2},j);
+E('rect',{x:76,y:y-6,width:18,height:12,rx:2,fill:'#888780'},j)})}
+function hil(list){const g=$('gh');g.innerHTML='';(list||[]).forEach(h=>{
+if(h=='R+')E('rect',{x:130,y:33,width:500,height:18,rx:4,fill:'#E24B4A',opacity:.16},g);
+else if(h=='R-')E('rect',{x:130,y:59,width:500,height:18,rx:4,fill:'#378ADD',opacity:.18},g);
+else{const lo=h[0]=='S',n=+h.slice(1);E('rect',{x:X(n)-12,y:lo?280:112,width:24,height:148,rx:4,fill:lo?'#AFA9EC':'#FAC775',opacity:lo?.5:.55},g)}})}
+function part(p,s){const g=E('g',{});
+if(p.t=='R'){const[ax,ay]=P(p.a),[bx,by]=P(p.b);let cx,cy,an;
+if(ax==bx){const x=ax+(p.o||-18);E('path',{d:`M${ax} ${ay}C${ax} ${ay-8} ${x} ${ay-6} ${x} ${ay+8}L${x} ${by-10}C${x} ${by-2} ${bx} ${by-6} ${bx} ${by}`,...LEG},g);cx=x;cy=(ay+by)/2;an=90;p.fp=[[ax,ay],[x,ay+8],[x,by-10],[bx,by]]}
+else{const l=p.l??-10;E('path',{d:`M${ax} ${ay}L${ax+6} ${ay+l}L${bx-6} ${by+l}L${bx} ${by}`,...LEG},g);cx=(ax+bx)/2;cy=(ay+by)/2+l;an=Math.atan2(by-ay,bx-ax)*57.3;p.fp=[[ax,ay],[ax+6,ay+l],[bx-6,by+l],[bx,by]]}
+const b=E('g',{transform:`rotate(${an} ${cx} ${cy})`},g);
+E('rect',{x:cx-23,y:cy-7,width:46,height:14,rx:6,fill:'#85B7EB',stroke:'#185FA5','stroke-width':.5},b);
+[...BANDS[p.v]].forEach((c,i)=>E('rect',{x:cx-17+i*6+(i>3?6:0),y:cy-7,width:3,height:14,fill:BC[c]},b))}
+else if(p.t=='L'){const[ax,ay]=P(p.a),[kx,ky]=P(p.k),vx=kx-ax,vy=ky-ay,L=Math.hypot(vx,vy),ux=vx/L,uy=vy/L;let nx=uy,ny=-ux;if(ny>0){nx=-nx;ny=-ny}if(p.dn){nx=-nx;ny=-ny}
+const cx=(ax+kx)/2+nx*21,cy=(ay+ky)/2+ny*21,b=br(s.I||0),C=LC[p.c||'r'];
+E('path',{d:`M${ax} ${ay}L${ax+nx*10-ux*7} ${ay+ny*10-uy*7}L${cx-ux*11} ${cy-uy*11}`,...LEG},g);
+E('path',{d:`M${kx} ${ky}L${cx+ux*10} ${cy+uy*10}`,...LEG},g);
+if(b)E('circle',{cx,cy,r:27,fill:C[2],opacity:(b*.8).toFixed(2),class:s.ch?'lit':''},g);
+E('circle',{cx,cy,r:12,fill:mix(C[0],C[1],b),stroke:C[3],'stroke-width':1},g);
+if(b>.3)E('circle',{cx:cx-4,cy:cy-4,r:3,fill:'#fff',opacity:.7},g);
+p.fp=[[ax,ay],[cx,cy],[kx,ky]]}
+else if(p.t=='W'){let[ax,ay]=P(p.a);const[bx,by]=P(p.b),q=p.q;if(p.lo&&!s.tap){const o=p.lov||[12,-18];ax+=o[0];ay+=o[1]}
+const col={k:'#2C2C2A',r:'#D83A34',o:'#EF9F27'}[p.c||'k'];
+const V=p.via||[];E('path',{d:q?`M${ax} ${ay}Q${q[0]} ${q[1]} ${bx} ${by}`:`M${ax} ${ay}`+V.map(v=>`L${v[0]} ${v[1]}`).join('')+`L${bx} ${by}`,'stroke-linejoin':'round',fill:'none',stroke:col,'stroke-width':4.5,'stroke-linecap':'round','stroke-dasharray':p.c=='o'?'8 6':'none'},g);
+E('circle',{cx:ax,cy:ay,r:3.6,fill:'#2C2C2A'},g);E('circle',{cx:bx,cy:by,r:3.6,fill:'#2C2C2A'},g);
+p.fp=q?[0,.25,.5,.75,1].map(t=>[(1-t)**2*ax+2*t*(1-t)*q[0]+t*t*bx,(1-t)**2*ay+2*t*(1-t)*q[1]+t*t*by]):[[ax,ay],...V,[bx,by]]}
+else if(p.t=='B'){const L=p.g.map(P),cx=(L[0][0]+L[1][0])/2,cy=(L[0][1]+L[2][1])/2;
+L.forEach(([x,y])=>E('line',{x1:x,y1:y,x2:x+(x<cx?6:-6),y2:y+(y<cy?6:-6),...LEG},g));
+E('rect',{x:cx-26,y:cy-20,width:52,height:40,rx:4,fill:'#5F5E5A',stroke:'#2C2C2A'},g);
+E('circle',{cx,cy,r:s.pr?11:13,fill:s.pr?'#2C2C2A':'#B4B2A9',stroke:'#2C2C2A'},g);
+g.id='btn';g.style.cursor='pointer';p.fp=[L[0],[cx,cy],L[3]]}
+else if(p.t=='K'){const L=p.g.map(P),[cx,y0]=L[1],a=-135+270*(s.pot??1);
+L.forEach(([x,y])=>E('line',{x1:x,y1:y,x2:x,y2:y-12,...LEG},g));
+E('rect',{x:cx-44,y:y0-52,width:88,height:40,rx:4,fill:'#378ADD',stroke:'#185FA5'},g);
+const k=E('g',{transform:`rotate(${a} ${cx} ${y0-32})`},g);
+E('circle',{cx,cy:y0-32,r:15,fill:'#F1EFE8',stroke:'#888780'},k);
+E('line',{x1:cx,y1:y0-32,x2:cx,y2:y0-45,stroke:'#2C2C2A','stroke-width':2.5,'stroke-linecap':'round'},k);
+p.fp=[L[0],[cx,y0-32],L[1]]}
+else if(p.t=='Z'){const[ax,ay]=P(p.a),[bx,by]=P(p.b),cx=(ax+bx)/2,cy=ay-30;
+E('path',{d:`M${ax} ${ay}L${cx-20} ${cy+17}`,...LEG},g);E('path',{d:`M${bx} ${by}L${cx+20} ${cy+17}`,...LEG},g);
+E('circle',{cx,cy,r:27,fill:'#2C2C2A'},g);E('circle',{cx,cy,r:5,fill:'#5F5E5A'},g);
+E('circle',{id:'rg',cx,cy,r:27,fill:'none',stroke:'#BA7517','stroke-width':3,opacity:0},g);
+p.fp=[[ax,ay],[cx,cy],[bx,by]]}
+return g}
+function route(tk,sw){const o=[];tk.forEach(t=>{let q;
+if(t=='B+'){const y=sw?68:42;q=[[30,156],[30,y],[148,y]]}
+else if(t=='B-'){const y=sw?42:68;q=[[148,y],[56,y],[56,156]]}
+else if(t.includes(':')){q=PT[t.slice(2)].fp.slice();const l=o[o.length-1];if(l&&D(l,q[q.length-1])<D(l,q[0]))q.reverse()}
+else q=[P(t)];o.push(...q)});return o}
+let cur=0,rev=false,pv=new Set(),pl={},timer=null,play=null,AC,hp,cs,osc;const st={};
+function au(){try{if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;AC=new C();hp=AC.createBiquadFilter();hp.type='highpass';hp.frequency.value=300;const g=AC.createGain();g.gain.value=.25;hp.connect(g).connect(AC.destination);cs=AC.createConstantSource();cs.offset.value=0;cs.connect(hp);cs.start()}if(AC.state=='suspended')AC.resume();return AC}catch(e){return null}}
+function edge(on){const a=au();if(a)cs.offset.setValueAtTime(on?1:0,a.currentTime)}
+function auto(rate){try{if(osc){osc.stop();osc=null}if(rate){const a=au();if(!a)return;osc=a.createOscillator();osc.type='square';osc.frequency.value=rate;osc.connect(hp);osc.start()}}catch(e){}}
+function ring(){const r=$('rg');if(!r)return;r.classList.remove('ring');r.getBoundingClientRect();r.classList.add('ring')}
+function reset(){Object.assign(st,{pr:false,pot:0,sw:false,tap:false,ab:0,run:false,rate:4});if(timer){clearInterval(timer);timer=null}auto(0)}
+function vis(i){let v=new Set();for(let k=0;k<=i;k++){const s=S[k];if(s.clr)v=new Set();(s.add||[]).forEach(x=>v.add(x));(s.rm||[]).forEach(x=>v.delete(x))}return v}
+function inh(i,k,d){for(let j=i;j>=0;j--)if(S[j][k]!==undefined)return S[j][k];return d}
+function res(s){if(s.q&&!rev&&!s.keep)return{lit:{},fl:[],ro:''};if(s.calc)return s.calc(st);return{lit:s.lit||{},fl:s.fl||[],ro:s.ro||''}}
+function draw(an){const s=S[cur],pw=inh(cur,'pw',0),r=res(s),v=vis(cur);
+(r.add||[]).forEach(x=>v.add(x));(r.rm||[]).forEach(x=>v.delete(x));bat(pw,st.sw);hil(s.hi);
+const gp=$('gp');gp.innerHTML='';const nl={};
+v.forEach(id=>{const p=PT[id],I=pw?(r.lit[id]||0):0;nl[id]=I;const g=part(p,{I,ch:an&&I>0&&(pl[id]||0)!=I,pr:st.pr,pot:st.pot,tap:st.tap});if(an&&!pv.has(id))g.setAttribute('class','pin');gp.appendChild(g)});
+const gf=$('gf');gf.innerHTML='';
+if(pw)r.fl.forEach(f=>{const q=route(f.p,st.sw),d=Math.max(.2,Math.min(3,.4*Math.pow(21/f.i,.45)));E('path',{d:'M'+q.map(z=>z[0].toFixed(1)+' '+z[1].toFixed(1)).join('L'),class:'flow',style:'--d:'+d.toFixed(2)+'s'},gf)});
+const gx=$('gx');gx.innerHTML='';if(s.x&&(rev||!s.q)){const[x,y]=s.x;E('path',{d:`M${x-8} ${y-8}L${x+8} ${y+8}M${x+8} ${y-8}L${x-8} ${y+8}`,stroke:'#E24B4A','stroke-width':4,'stroke-linecap':'round'},gx)}
+$('ro').textContent=r.ro||'';pv=v;pl=nl;
+const b=$('btn');if(b&&s.ix=='hold')b.onpointerdown=e=>{e.preventDefault();press(true)}}
+function press(on){if(st.pr==on)return;st.pr=on;draw(false)}
+function tap(on){if(st.tap==on)return;st.tap=on;draw(false);edge(on);if(on)ring()}
+function loop(){if(timer){clearInterval(timer);timer=null}const ix=S[cur].ix;
+if(ix=='flip'&&st.run)timer=setInterval(()=>{st.sw=!st.sw;draw(false)},1000/st.rate);
+if(ix=='tap'){auto(st.run?st.rate:0);if(st.run)timer=setInterval(()=>{st.tap=!st.tap;draw(false);if(st.tap)ring()},Math.max(70,500/st.rate));else{st.tap=false;draw(false)}}}
+function controls(s){const x=$('ix');x.innerHTML='';
+const B=(l,f)=>{const b=document.createElement('button');b.innerHTML=l;if(f)b.onclick=f;x.appendChild(b);return b};
+const H=(l,fn)=>{const b=B(l);b.onpointerdown=e=>{e.preventDefault();fn(true)};b.onkeydown=e=>{if(e.key==' '||e.key=='Enter'){e.preventDefault();fn(true)}};b.onkeyup=()=>fn(false);return b};
+const Rg=(lab,mn,mx,val,fmt,on)=>{const w=document.createElement('label');w.style.cssText='display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-secondary);flex:1;min-width:230px';w.append(lab);const r=document.createElement('input');r.type='range';r.min=mn;r.max=mx;r.step=1;r.value=val;r.style.flex='1';const o=document.createElement('span');o.style.cssText='min-width:56px;color:var(--text-primary)';o.textContent=fmt(val);r.oninput=()=>{on(+r.value);o.textContent=fmt(+r.value)};w.append(r,o);x.appendChild(w)};
+if(s.q){const p=document.createElement('span');p.textContent='Predict first: '+nb(s.q);x.appendChild(p);
+B('Show result',function(){rev=true;this.remove();$('wy').textContent='Result: '+nb(s.why);draw(true)})}
+if(s.ix=='hold')H('Hold to press',press);
+if(s.ix=='pot')Rg('Knob',0,100,0,v=>'pot '+((100-v)/10).toFixed(1)+'K',v=>{st.pot=v/100;draw(false)});
+if(s.ix=='ab')B('Swap 1K and 330',()=>{st.ab^=1;draw(true)});
+if(s.ix=='flip'){B('Flip the battery',()=>{st.sw=!st.sw;draw(false)});const t=B('Keep flipping',()=>{st.run=!st.run;t.textContent=st.run?'Stop':'Keep flipping';loop()});Rg('Flips per second',1,20,4,v=>v+' /s',v=>{st.rate=v;loop()})}
+if(s.ix=='tap'){H('Hold to tap',tap);const t=B('Keep tapping',()=>{st.run=!st.run;t.textContent=st.run?'Stop':'Keep tapping';loop()});Rg('Taps per second',1,200,4,v=>v+' /s',v=>{st.rate=v;loop()})}}
+window.addEventListener('pointerup',()=>{press(false);if(!st.run)tap(false)});
+// A number keeps its unit on the same line ("2 V", "15 mA", "330 Ω"), even on a phone.
+const nb=x=>(x||'').replace(/(\d) (?=(?:V|mA|Ω|K)(?![A-Za-z]))/g,'$1\u00a0');
+function go(i,an=true){if(i<0||i>=S.length)return;reset();cur=i;rev=false;const s=S[i];
+$('tt').textContent=nb(s.t);$('dd').textContent=nb(s.d);$('wy').textContent='';
+const f=document.activeElement;$('bk').disabled=i===0;$('nx').disabled=i===S.length-1;
+if(f&&f.disabled)(f===$('nx')?$('bk'):$('nx')).focus();
+$('ct').textContent=(typeof PART!=='undefined'?PART+(i+1)+' · ':'')+`Step ${i+1} of ${S.length}`;$('pb').style.width=(100*(i+1)/S.length)+'%';controls(s);draw(an)}
+function stop(){clearInterval(play);play=null;$('pl').innerHTML='<i class="ti ti-player-play" aria-hidden="true"></i> Play the build'}
+$('pl').onclick=()=>{if(play)return stop();play=setInterval(()=>{const n=S[cur+1];if(!n)return stop();go(cur+1);if(n.q||n.ix||n.pause)stop()},2400);$('pl').innerHTML='<i class="ti ti-player-pause" aria-hidden="true"></i> Pause'};
+$('nx').onclick=()=>{stop();go(cur+1)};$('bk').onclick=()=>{stop();go(cur-1)};
+if(typeof CROP!=='undefined')document.querySelector('svg').setAttribute('viewBox','0 0 680 '+CROP);
+board();go(0);
+</script>
+
+<script>
+// Tells the page around this frame how tall the widget is, so the frame fits it exactly;
+// follows the page's projector setting; and helps keyboard and screen-reader users.
+(function () {
+  function report(ready) {
+    var msg = { type: 'mtec-widget', height: document.body.scrollHeight };
+    if (ready) msg.ready = true;
+    if (window.parent !== window) window.parent.postMessage(msg, '*');
+  }
+  window.addEventListener('load', function () { report(); });
+  if (window.ResizeObserver) new ResizeObserver(function () { report(); }).observe(document.body);
+
+  // Every step change: report the height, and announce the new step to screen readers.
+  var counter = document.getElementById('ct'); // "K3 · Step 3 of 8"
+  var title = document.getElementById('tt');
+  var live = document.createElement('p');
+  live.className = 'sr-only';
+  live.setAttribute('aria-live', 'polite');
+  document.body.appendChild(live);
+  if (counter) new MutationObserver(function () {
+    report();
+    live.textContent = counter.textContent + '. ' + (title ? title.textContent : '');
+  }).observe(counter, { childList: true, characterData: true, subtree: true });
+
+  // "Show result" removes itself when pressed: put keyboard focus on Next, and read the result out.
+  var result = document.getElementById('wy');
+  var next = document.getElementById('nx');
+  if (result) result.setAttribute('aria-live', 'polite');
+  var controls = document.getElementById('ix');
+  if (controls && next) controls.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('button');
+    if (b && b.textContent.trim() === 'Show result') setTimeout(function () { next.focus(); }, 0);
+  }, true);
+
+  // The page tells us: projector on or off, and how tall its window is. With the projector on,
+  // the board shrinks if needed so the board and the step text fit on the screen together.
+  window.addEventListener('message', function (e) {
+    if (e.source !== window.parent || !e.data || e.data.type !== 'mtec-site') return;
+    var on = !!e.data.projector, root = document.documentElement;
+    root.classList.toggle('projector', on);
+    if (typeof e.data.dark === 'boolean') {
+      root.classList.toggle('dark', e.data.dark);
+      root.classList.toggle('light', !e.data.dark);
+    }
+    if (e.data.paper) root.style.setProperty('--bg', e.data.paper);
+    var board = document.querySelector('svg');
+    if (board) board.style.maxHeight = on && e.data.screenH ? Math.max(260, e.data.screenH - 470) + 'px' : '';
+    report();
+  });
+  report(true);
+})();
+</script>
+</body>
+</html>

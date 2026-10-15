@@ -24,11 +24,14 @@
   // ---- Widgets: each animated breadboard lives in its own frame.
   var frames = Array.prototype.slice.call(document.querySelectorAll('iframe.widget-frame'));
 
-  // Tells a widget whether the projector is on, and how tall this window is.
+  // Tells a widget whether the projector is on, how tall this window is, and the page's paper
+  // (its color, and whether it's the dark notebook), so the drawing sits on the same page.
   function tellWidget(frame) {
     if (frame.contentWindow) {
+      var css = getComputedStyle(root);
       frame.contentWindow.postMessage({ type: 'mtec-site', projector: root.classList.contains('projector'),
-                                        screenH: window.innerHeight }, '*');
+                                        screenH: window.innerHeight, paper: css.getPropertyValue('--paper').trim(),
+                                        dark: css.colorScheme === 'dark' }, '*');
     }
   }
 
@@ -47,6 +50,10 @@
     tellWidget(frame); // in case the widget finished loading before this script ran
   });
   window.addEventListener('resize', function () { frames.forEach(tellWidget); });
+  if (window.matchMedia) {
+    var scheme = window.matchMedia('(prefers-color-scheme: dark)');
+    if (scheme.addEventListener) scheme.addEventListener('change', function () { frames.forEach(tellWidget); });
+  }
 
   // ---- Projector: bigger text for the room.
   var toggle = document.querySelector('.projector-toggle');
@@ -131,7 +138,7 @@
   // everything (results and card names too), so James's printed copy has the answers.
   var opened = [];
   window.addEventListener('beforeprint', function () {
-    var pick = teacher ? 'details' : 'details.dark';
+    var pick = teacher ? 'details' : 'details.dark, details.words, details.why';   // the steps and the why print open
     document.querySelectorAll(pick).forEach(function (d) {
       if (!d.open) { d.open = true; opened.push(d); }
     });

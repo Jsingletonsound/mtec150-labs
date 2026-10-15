@@ -1,7 +1,7 @@
 // Kit Day (Oct 8): first light by the steps, plus the rail test. NEW 2026-10-02.
 // Built from cfgA. No Ohm's-law readouts on purpose: the LED and the breadboard are
 // borrowed as tools (how only). The why, and the 7 mA, wait for Lecture 1.
-// 2026-10-03, James: K9-K13 "swap it around" back pocket, from cfgA's Tests 2-4 and Lab 1's
+// 2026-10-03, James: K9-K13 "swap it around" back pocket, from cfgA's Tests 2-4 and Lab 2's
 // Extra #5, without readouts. K1-K8 are unchanged.
 const PART='K';
 const PT={r:{t:'R',a:'+58',b:'58a',v:'1K'},l:{t:'L',a:'58c',k:'57c'},w:{t:'W',a:'57a',b:'-57'},
@@ -16,7 +16,7 @@ const S=[
 {t:'2. The red LED',d:'Long leg in 58c, short leg in 57c. Long leg faces plus.',add:['l'],hi:['s58','s57']},
 {t:'3. The black jumper',d:'From 57a to the − row. Any seat in strip 57 works: letters are just seats in the same strip.',add:['w'],hi:['s57']},
 {t:'4. Battery last: the + jumper in',d:'The loop is closed: + row, 1K, strip 58, LED, strip 57, jumper, − row, back to the battery. Every connection is two legs in the same strip. Why this resistor, and how much current flows: Lecture 1, next week.',pw:1,lit:{l:7},fl:F(7,'R:r','L:l','W:w'),hi:['s58','s57']},
-{t:'The rail test: the far end of the − row',d:'Power off. Move the black jumper\'s rail end into the − row at the far end of the board, away from the battery jumpers and well past the middle. The drawing shows only part of the board; on yours, go farther. Check it\'s in the − row, by the blue line. Power on.',rm:['w'],add:['wf'],q:'lit or dark?',why:'Lit on most boards: the − row runs the full length. If yours goes dark, the rail is split in the middle. Tell James before Lab 1.',lit:{l:7},fl:F(7,'R:r','L:l','W:wf'),hi:['R-']},
+{t:'The rail test: the far end of the − row',d:'Power off. Move the black jumper\'s rail end into the − row at the far end of the board, away from the battery jumpers and well past the middle. The drawing shows only part of the board; on yours, go farther. Check it\'s in the − row, by the blue line. Power on.',rm:['w'],add:['wf'],q:'lit or dark?',why:'Lit on most boards: the − row runs the full length. If yours goes dark, the rail is split in the middle. Tell James before Lab 2.',lit:{l:7},fl:F(7,'R:r','L:l','W:wf'),hi:['R-']},
 {t:'Power off, every time',d:'Lift the + jumper out of the rail and set it away from the board. Do this before you change any part, all semester.',pw:0},
 {t:'If there\'s time: first light again',d:'1K from the + row above strip 58 to 58a, red LED long leg 58c, short leg 57c, black jumper from 57a to the − row. Power on. For every test after this: power off, make the change, power on.',rm:['wf'],add:['w'],pw:1,lit:{l:7},fl:F(7,'R:r','L:l','W:w'),hi:['s58','s57']},
 {t:'Move the short leg one strip',d:'Move only the short leg, from 57c to 56c.',rm:['l'],add:['l6'],q:'lit or dark?',why:'Dark. Strip 56 doesn\'t touch strip 57, so the short leg no longer shares a strip with the jumper.',x:[310,231],hi:['s57','s56']},

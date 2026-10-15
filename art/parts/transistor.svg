@@ -30,13 +30,13 @@
     </g>
   </g>
   <!-- label arrows -->
-  <path d="M46 54 C54 66 68 88 84 98" fill="none" stroke-width="1.6"/>
-  <path d="M80 91 L84 98 L76 99" fill="none" stroke-width="1.6"/>
+  <path d="M44 114 C56 106 70 101 88 100" fill="none" stroke-width="1.6"/>
+  <path d="M80 96.4 L88 100 L80.2 104.4" fill="none" stroke-width="1.6"/>
   <path d="M186 194 C178 190 168 186 160 184" fill="none" stroke-width="1.6"/>
   <path d="M167 180 L160 184 L167 189" fill="none" stroke-width="1.6"/>
 </g>
 <g font-family="'Chalkboard SE', 'Comic Sans MS', 'Segoe Print', Noteworthy, cursive" font-size="16" fill="#2f2e2b">
-  <text x="8" y="44">flat face</text>
+  <text x="8" y="132">flat face</text>
   <text x="190" y="202">three legs</text>
 </g>
 </svg>

@@ -4,8 +4,9 @@ One web page per electronics session of MTEC 150 (MiraCosta College). Students o
 a page from Canvas on a laptop or phone and follow it while they build. James
 projects the same page.
 
-Add `?teacher=1` to the end of any page's address to see the teacher view: minutes,
-the Mims pages each part rests on, and James's notes. It is only hidden, not locked:
+Add `?teacher=1` to the end of any page's address to see the teacher view: the session's
+minutes and Mims pages under the title, and James's notes. (A "Rests on Mims" line written
+under a part's heading in `content/` shows to everyone.) It is only hidden, not locked:
 anyone can read it in the page source, so nothing graded ever goes in it.
 
 ## What's in this folder
@@ -34,7 +35,7 @@ Double-click `docs/index.html`. It opens in your browser.
 2. Run the check (below). It rebuilds the site first.
 3. Look at the screenshots in `checks/`.
 
-The breadboard steps live in `widgets/cfgK.js` (Lab 1: `cfgA.js` to `cfgE.js`), and they say the
+The breadboard steps live in `widgets/cfgK.js` (Lab 2: one per panel, `cfg2B.js` to `cfg2Q.js`), and they say the
 same thing as the page's `::: steps` lists. If you change a `::: steps` list, ask Claude Code to
 change the matching breadboard steps too, then run the check.
 
@@ -99,11 +100,26 @@ step. Special boxes start with `:::` and a name, and end with a line that is jus
 | `::: printable` | the inventory sheet; it starts on its own page when printed |
 | `::: challenge` | a challenge: names a result, never the wiring |
 | `::: teacher` | James's notes: teacher view only |
+| `::: panel C` | starts one experiment's panel, like one slide of the deck (Lab 2 uses them). Lines: `kicker:` (the small label), `title:` (the big hand-lettered line), `pages:` and `outside:` (the small credit line at the bottom), `minutes:` and `new:` (teacher view only). Everything after it, up to the next `::: panel` or `## ` heading, sits in the panel |
+| `::: words` | the steps in plain words, folded away under the drawing ("The steps in words"); it prints open |
+| `::: bands` | the kit's resistors drawn with their bands, each with its value written under it, one value per line (`1K`), in the order the lab uses them |
+| `::: why` | "Why it works": a short read in Mims's plain style, folded under the drawing; it prints open |
 
 ## Which pages are built
 
-`build_site.py` builds the pages listed in `READY` near its top. Right now that's Kit Day only;
-each phase adds more.
+`build_site.py` builds the pages listed in `READY` near its top. Right now that's Kit Day and
+Lab 2; each phase adds more.
+
+## The look
+
+The pages look like a page torn out of the same lab notebook the slides come from: ruled paper,
+a margin line, hand-lettered capitals for headings (the deck's own **MTEC Notebook Hand**) and
+**Atkinson Hyperlegible** for reading. Both fonts are open-license; the files and their licenses
+are in `site/fonts/`. Colors live at the top of `site/style.css`. Red means + and nothing else.
+
+Two other looks, to compare: add `?look=graph` (an engineer's quad-ruled page) or `?look=bench`
+(the dark notebook, even in daylight) to a page's address. `?look=notebook` goes back. The browser
+tab remembers the choice until it's closed. Printing is always plain black on white.
 
 ## Showing the parts on the projector
 
@@ -129,9 +145,9 @@ To show an "Open the breadboard simulator" link on the lab pages, put the simula
 
 ## Publishing (only when James says so)
 
-**The site is live at https://jsingleton-mtec150.github.io/mtec150-labs/**
-(Kit Day: https://jsingleton-mtec150.github.io/mtec150-labs/kit-day.html). It lives on the
-GitHub account `jsingleton-MTEC150`, in the public repository `mtec150-labs`.
+**The site is live at https://jsingletonsound.github.io/mtec150-labs/**
+(Kit Day: https://jsingletonsound.github.io/mtec150-labs/kit-day.html). It lives on the
+GitHub account `Jsingletonsound`, in the public repository `mtec150-labs`.
 
 To publish a change: run the check, look at the screenshots, then ask Claude Code to publish.
 It takes a minute or two to show up online.

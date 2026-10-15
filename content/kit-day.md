@@ -15,7 +15,7 @@ minutes: 90
 Runs after the midterm, 3:20–4:50 (90 min). Everything on this page is lab-slide material (D-EL-L1SCOPE), so no lecture is needed first. **No Ohm's law today:** the LED and the board are borrowed as tools; why the resistor matters, and the 7 mA, are Lecture 1. Students who finish the exam early read this page quietly on their phones.
 
 Minutes: groups 10 · meet the parts 15 · the board 10 · battery hookup 5 · first light 20 · rail test 5 · safety, clean-up and check-in 10 · buffer 5 = 80. If there's time: swap it around, 10. Total 90.
-If the midterm runs long, cut in this order: swap it around; then the rail test (Lab 1 Part A's Test 5 repeats it); then speed up the walk-through (show the part, say its name, skip the description; still collect the 10, 100 and 220).
+If the midterm runs long, cut in this order: swap it around; then the rail test (Lab 2 Part A's Test 5 repeats it); then speed up the walk-through (show the part, say its name, skip the description; still collect the 10, 100 and 220).
 :::
 
 ## 1. Your group (10 min)
@@ -215,7 +215,7 @@ Long leg faces plus. If you can't tell, flip it. It won't break.
 :::
 
 ::: teacher
-Why the resistor, why it's dark when flipped, and the 7 mA: Lecture 1, then Lab 1 Part A. Don't teach them today; say "next week."
+Why the resistor, why it's dark when flipped, and the 7 mA: Lecture 1, then Lab 2 Part A. Don't teach them today; say "next week."
 :::
 
 ## 6. The rail test (5 min)
@@ -225,11 +225,11 @@ Use step K7 in the drawing above.
 Power off. Move the black jumper's rail end into the − row at the **far end of the board**, away from the battery jumpers and past the middle. Check that it's in the − row, by the blue line. Power on.
 
 ::: predict Does the LED stay lit?
-Lit on most boards: the − row runs the full length. If yours goes dark (and the wire really is in the − row), your board's rails are split in the middle. **Tell James before Lab 1.**
+Lit on most boards: the − row runs the full length. If yours goes dark (and the wire really is in the − row), your board's rails are split in the middle. **Tell James before Lab 2.**
 :::
 
 ::: teacher
-OI-08. Note each group's result. If any board has split rails, tell the whole class at the start of Lab 1 and show the fix: a jumper that bridges the two halves.
+OI-08. Note each group's result. If any board has split rails, tell the whole class at the start of Lab 2 and show the fix: a jumper that bridges the two halves.
 :::
 
 ## If there's time: swap it around (10 min)
@@ -266,7 +266,7 @@ Use steps K9 to K13 in the drawing above. Same parts, moved around: some swaps s
 :::
 
 ::: teacher
-Back pocket for stretching time (your call, 2026-10-03). These are Lab 1 Part A's Tests 2–4 and Lab 1's Extra #5, in the same words, minus the 7 mA (that waits for Lecture 1). Lab 1 still runs Tests 2–4 for every group, whether or not they did them today; a second pass on strips and the gap costs a few minutes of challenge time. (Lab 1's own cut list can still drop Test 4 if that lab runs long.) Groups that did the rail test today skip Test 5. Drawing steps K9–K13 match.
+Back pocket for stretching time (your call, 2026-10-03). These are Lab 2 Part A's Tests 2–4 and Lab 2's Extra #5, in the same words, minus the 7 mA (that waits for Lecture 1). Lab 2 still runs Tests 2–4 for every group, whether or not they did them today; a second pass on strips and the gap costs a few minutes of challenge time. (Lab 2's own cut list can still drop Test 4 if that lab runs long.) Groups that did the rail test today skip Test 5. Drawing steps K9–K13 match.
 :::
 
 ## 7. The safety rules for every lab

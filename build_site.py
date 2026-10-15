@@ -12,6 +12,7 @@ What it does, in order:
 The page format (the ::: blocks) is described in README.md.
 """
 import datetime
+import hashlib
 import html
 import json
 import pathlib
@@ -30,8 +31,8 @@ ART = ROOT / 'art'
 DOCS = ROOT / 'docs'
 
 # The pages built so far, by session id (see sessions.json).
-# Phase 1: Kit Day. Phase 2 adds 'lab1'. Phase 3 adds the rest.
-READY = ['kit-day']
+# Phase 1: Kit Day. Phase 2 adds Lab 2 (Oct 15; called Lab 1 until 2026-10-04). Phase 3 adds the rest.
+READY = ['kit-day', 'lab2']
 
 # The one outside dependency: Tabler icons, pinned to one version.
 ICONS_CSS = 'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.48.0/dist/tabler-icons.min.css'
@@ -39,7 +40,8 @@ ICONS_CSS = 'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.48.0/dist/tabl
 FRONT_KEYS = ['title', 'session', 'date', 'status', 'rests_on', 'minutes']
 STATUSES = ['published', 'draft', 'hidden']
 BLOCKS = ['widget', 'steps', 'predict', 'remember', 'safety', 'outside', 'dark',
-          'card', 'pictures', 'checklist', 'printable', 'challenge', 'teacher']
+          'card', 'pictures', 'checklist', 'printable', 'challenge', 'teacher',
+          'panel', 'words', 'bands', 'why']
 
 
 class BuildError(Exception):
@@ -56,6 +58,15 @@ def tidy(text):
     None of them change a word."""
     # Fill-in blanks like ____ would be read as bold/italic marks: keep them as underscores.
     text = re.sub(r'_{3,}', lambda m: '&#95;' * len(m.group()), text)
+    # A number stays on the same line as its unit ("2 V", "21 mA", "330 Ω", "15 min"), and a
+    # page number with its "p." ("p. 47"): the space between them becomes a no-break space.
+    # It looks the same.
+    text = re.sub(r'(\d) (?=(?:V|mA|Ω|min)(?!\w))', '\\1\u00a0', text)
+    text = re.sub(r'\b(pp?\.) (?=\d)', '\\1\u00a0', text)
+    # The same for a rail sign and its word ("the − row", "+ jumper"), and a name and its
+    # number or letter ("Lab 1", "Part A", "Test 5").
+    text = re.sub(r'(?<=[ (])([+−]) (?=[A-Za-z])', '\\1\u00a0', text)
+    text = re.sub(r'\b(Lab|Lecture|Part|Test) (?=[0-9A-Z]\b)', '\\1\u00a0', text)
     # A list needs a blank line between it and the paragraph next to it.
     out = []
     for line in text.split('\n'):
@@ -69,9 +80,20 @@ def tidy(text):
     return '\n'.join(out)
 
 
+UNITS = re.compile(r'µ\w*|(?<=[\d\s\u00a0])(?:mA|mV|mW|ms)\b')
+
+
+def keep_units(html_text):
+    """Headings and labels are drawn in hand-lettered capitals. A few units would change meaning
+    in capitals (µF would read MF, mA would read MA), so they keep their own case."""
+    parts = re.split(r'(<[^>]+>)', html_text)
+    return ''.join(s if s.startswith('<') else UNITS.sub(lambda m: f'<span class="unit">{m.group()}</span>', s)
+                   for s in parts)
+
+
 def md(text):
     """Markdown to HTML. Each line break in the content stays a line break."""
-    return markdown.markdown(tidy(text), extensions=['tables', 'sane_lists', 'nl2br'])
+    return keep_units(markdown.markdown(tidy(text), extensions=['tables', 'sane_lists', 'nl2br']))
 
 
 def md_inline(text):
@@ -99,8 +121,8 @@ def b_widget(arg, body, ctx):
         raise BuildError(f'"::: widget {key}" should be empty: put the text after its closing :::')
     title = html.escape(ctx['widgets'][key], quote=True)
     return (f'<figure class="widget">\n'
-            f'<iframe class="widget-frame" src="widgets/{key}.html" title="{title}"></iframe>\n'
-            f'<p class="widget-print">Drawing {key}: online only. The numbered steps on this page are the same build.</p>\n'
+            f'<iframe class="widget-frame" src="widgets/{key}.html?v={ctx["versions"][key]}" title="{title}"></iframe>\n'
+            f'<p class="widget-print">Drawing {re.sub(r"^[0-9]+", "", key)}: online only. The numbered steps on this page are the same build.</p>\n'
             f'</figure>')
 
 
@@ -111,9 +133,13 @@ def b_steps(arg, body, ctx):
 def b_predict(arg, body, ctx):
     if not arg.strip():
         raise BuildError('"::: predict" needs its question on the same line')
+    result = md(body)
+    # A result that opens with "Lit" or "Dark" shows that word as the answer: Lit glows like the LED.
+    result = re.sub(r'^<p><strong>(Lit|Dark)([^<]*)</strong>',
+                    lambda m: f'<p><strong class="answer {m.group(1).lower()}">{m.group(1)}{m.group(2)}</strong>', result)
     return (f'<div class="predict">\n'
             f'<p class="predict-q"><span class="tag">Predict</span> {md_inline(arg)}</p>\n'
-            f'<details>\n<summary>Show result</summary>\n<div class="result">\n{md(body)}\n</div>\n</details>\n'
+            f'<details>\n<summary>Show result</summary>\n<div class="result">\n{result}\n</div>\n</details>\n'
             f'</div>')
 
 
@@ -142,7 +168,7 @@ def art(path):
     path = path.strip()
     if not (ART / path).is_file():
         raise BuildError(f'there is no drawing art/{path}')
-    return 'art/' + html.escape(path, quote=True)
+    return 'art/' + html.escape(path, quote=True) + '?v=' + stamp((ART / path).read_bytes())
 
 
 def b_card(arg, body, ctx):
@@ -222,6 +248,105 @@ def b_challenge(arg, body, ctx):
     return f'<div class="box challenge">\n{label("puzzle", "Challenge")}\n{md(body)}\n</div>'
 
 
+def fields(body, where, allowed):
+    """A block's "name: value" lines, as a dict."""
+    out = {}
+    for line in body.strip().split('\n'):
+        if not line.strip():
+            continue
+        key, colon, value = line.partition(':')
+        key = key.strip()
+        if not colon or key not in allowed:
+            raise BuildError(f'"{where}": each line is one of {", ".join(allowed)} then ":", not: {line}')
+        out[key] = value.strip()
+    return out
+
+
+PANEL_KEYS = ['kicker', 'title', 'pages', 'outside', 'minutes', 'new']
+
+
+def b_panel(arg, body, ctx):
+    """One experiment, one panel, like one slide of the deck: a kicker ("☐ A · First light"),
+    the big hand-lettered title, then everything up to the next panel or "## " heading,
+    and a small credit line at the bottom (the Mims pages, and anything outside the book).
+    Returns the opening HTML and the closing HTML."""
+    letter = arg.strip()
+    if not re.fullmatch(r'[A-Z]', letter):
+        raise BuildError(f'"::: panel {letter}": a panel is named by one capital letter, like "::: panel C"')
+    f = fields(body, f'::: panel {letter}', PANEL_KEYS)
+    for key in ('kicker', 'title'):
+        if not f.get(key):
+            raise BuildError(f'"::: panel {letter}" needs a "{key}:" line')
+    minutes = (f'<span class="teacher-only panel-min"> · {html.escape(f["minutes"])} min</span>'
+               if f.get('minutes') else '')
+    opening = (f'<section class="panel" id="{letter}" aria-labelledby="{letter}-title">\n'
+               f'<p class="kicker"><span class="kbox" aria-hidden="true"></span>{letter} · {md_inline(f["kicker"])}{minutes}</p>\n'
+               f'<h2 class="panel-title" id="{letter}-title">{md_inline(f["title"])}</h2>')
+    if f.get('new'):
+        opening += f'\n<p class="teacher-only new-flag">{icon("flask")} New: {md_inline(f["new"])}</p>'
+    credits = []
+    if f.get('pages'):
+        credits.append(md_inline(f['pages']))
+    if f.get('outside'):
+        credits.append(f'<strong>Outside the book:</strong> {md_inline(f["outside"])}')
+    closing = (f'<p class="panel-foot">{" · ".join(credits)}</p>\n' if credits else '') + '</section>'
+    return opening, closing
+
+
+def b_words(arg, body, ctx):
+    """The steps in plain words, folded away under the drawing. Printing opens it, and screen
+    readers and phones can always open it: nothing depends on the animation."""
+    label = arg.strip() or 'The steps in words'
+    return (f'<details class="words">\n<summary>{icon("list-numbers")} {html.escape(label)}</summary>\n'
+            f'<div class="steps">\n{md(body)}\n</div>\n</details>')
+
+
+def b_why(arg, body, ctx):
+    """Why it works: a short read, the way Mims would explain it, folded under the drawing so the
+    page stays pictures-first. Printing opens it."""
+    return (f'<details class="why">\n<summary>{icon("bulb")} Why it works</summary>\n'
+            f'<div class="why-body">\n{md(body)}\n</div>\n</details>')
+
+
+# The kit's resistor bands, read from the widget engine, so the page and the drawings always agree.
+BAND_COLORS = {'k': ('black', 0, '#2C2C2A'), 'n': ('brown', 1, '#7B4A26'), 'r': ('red', 2, '#D83A34'),
+               'o': ('orange', 3, '#EF7F1A'), 'y': ('yellow', 4, '#F2C200'), 'g': ('green', 5, '#3B9E4A'),
+               'b': ('blue', 6, '#2F6FD6'), 'v': ('violet', 7, '#7B4FC6'), 'a': ('gray', 8, '#8C8C8C'),
+               'w': ('white', 9, '#FFFFFF')}
+
+
+def engine_bands():
+    m = re.search(r"const BANDS=\{(.*?)\};", (WIDGETS / 'engine1.js').read_text(encoding='utf-8'))
+    return dict(re.findall(r"'([^']+)':'([a-z]{5})'", m.group(1)))
+
+
+def resistor_svg(bands, label):
+    """One resistor drawn like the breadboard drawings: legs, a blue body, five bands with a gap
+    before the last one."""
+    out = [f'<svg class="band-svg" viewBox="0 0 240 60" role="img" aria-label="{html.escape(label, quote=True)}">',
+           '<line x1="4" y1="30" x2="236" y2="30" stroke="#888780" stroke-width="3" stroke-linecap="round"/>',
+           '<rect x="50" y="12" width="140" height="36" rx="16" fill="#85B7EB" stroke="#185FA5" stroke-width="1.5"/>']
+    for i, c in enumerate(bands):
+        x = 68 + i * 18 + (14 if i == 4 else 0)
+        out.append(f'<rect x="{x}" y="12" width="10" height="36" fill="{BAND_COLORS[c][2]}"'
+                   + (' stroke="#8C8C8C" stroke-width="0.5"' if c == 'w' else '') + '/>')
+    out.append('</svg>')
+    return ''.join(out)
+
+
+def b_bands(arg, body, ctx):
+    """The kit's resistors, drawn with their bands, each with its value written under it, in the
+    order the lines give (the order the lab uses them). Each line is one value from the kit ("1K")."""
+    kit = engine_bands()
+    cards = []
+    for value in [v.strip() for v in body.strip().split('\n') if v.strip()]:
+        if value not in kit:
+            raise BuildError(f'"::: bands": the engine has no bands for "{value}" (it has {", ".join(kit)})')
+        cards.append(f'<li class="band-card">{resistor_svg(kit[value], f"A resistor strip labeled {value}")}'
+                     f'<p class="band-value hand">{html.escape(value)}</p></li>')
+    return '<ol class="band-cards">\n' + '\n'.join(cards) + '\n</ol>'
+
+
 def b_teacher(arg, body, ctx):
     return (f'<div class="box teacher-note teacher-only">\n{label("school", "Teacher notes")}\n'
             f'{md(body)}\n</div>')
@@ -265,6 +390,12 @@ def split_blocks(body, offset):
 
 def render_body(body, ctx, offset):
     out, cards = [], []
+    panel = []   # the open panel's closing HTML, while a panel is open
+
+    def close_panel():
+        flush_cards()
+        if panel:
+            out.append(panel.pop())
 
     def flush_cards():
         if cards:
@@ -276,9 +407,21 @@ def render_body(body, ctx, offset):
     for kind, arg, text, line in split_blocks(body, offset):
         try:
             if kind is None:
-                if text.strip():
+                # A "## " heading ends the open panel; the text before it stays in the panel.
+                lines = text.split('\n')
+                at = next((i for i, s in enumerate(lines) if s.startswith('## ')), len(lines))
+                before, after = '\n'.join(lines[:at]), '\n'.join(lines[at:])
+                if before.strip():
                     flush_cards()
-                    out.append(md(text))
+                    out.append(md(before))
+                if after.strip():
+                    close_panel()
+                    out.append(md(after))
+            elif kind == 'panel':
+                close_panel()
+                opening, closing = b_panel(arg, text, ctx)
+                out.append(opening)
+                panel.append(closing)
             elif kind == 'card':
                 cards.append(RENDER[kind](arg, text, ctx))
             else:
@@ -286,7 +429,7 @@ def render_body(body, ctx, offset):
                 out.append(RENDER[kind](arg, text, ctx))
         except BuildError as e:
             raise BuildError(f'line {line}: {e}') from None
-    flush_cards()
+    close_panel()
     return '\n\n'.join(out)
 
 
@@ -340,9 +483,18 @@ def fill(template, **values):
     return re.sub(r'\{\{(\w+)\}\}', lambda m: values.get(m.group(1), m.group()), template)
 
 
+def stamp(data):
+    """A short fingerprint of a file's contents. The links to the stylesheet, site.js, the drawings
+    and the breadboards carry it (style.css?v=...), so when one of them changes, browsers fetch the
+    new one instead of showing a copy they kept from before."""
+    return hashlib.sha1(data if isinstance(data, bytes) else data.encode('utf-8')).hexdigest()[:8]
+
+
 def page_html(template, sessions, title, head, content, robots=False):
     return fill(template,
                 title=html.escape(title),
+                css_v=stamp((SITE / 'style.css').read_bytes()),
+                js_v=stamp((SITE / 'site.js').read_bytes()),
                 course=html.escape(sessions['course']),
                 icons_css=ICONS_CSS,
                 robots='<meta name="robots" content="noindex">\n' if robots else '',
@@ -372,8 +524,10 @@ def build_page(session, sessions, template, ctx, out):
     if meta['status'] == 'draft':
         head += '\n<p class="draft-banner" role="status">Draft: steps come after James\'s bench test</p>'
     if sessions.get('sim_url'):
-        head += (f'\n<p class="sim"><a href="{html.escape(sessions["sim_url"], quote=True)}">'
-                 f'{icon("cpu")} Open the breadboard simulator</a></p>')
+        # The simulator opens in its own tab, so a group can go back and forth between the two.
+        head += (f'\n<p class="sim"><a class="button" href="{html.escape(sessions["sim_url"], quote=True)}" '
+                 f'target="_blank" rel="noopener">{icon("cpu")} Open the breadboard simulator'
+                 f'<span class="sr-only"> (opens in a new tab)</span></a></p>')
     page = page_html(template, sessions, meta['title'], head, content, robots=meta['status'] != 'published')
     name = pathlib.Path(session['file']).with_suffix('.html').name
     (out / name).write_text(page, encoding='utf-8')
@@ -409,7 +563,7 @@ def build_widgets(out):
     subprocess.run([sys.executable, 'build.py'], cwd=WIDGETS, check=True, stdout=subprocess.DEVNULL)
     frame = (SITE / 'widget.html').read_text(encoding='utf-8')
     (out / 'widgets').mkdir(parents=True, exist_ok=True)
-    titles = {}
+    titles, versions = {}, {}
     for cfg in sorted(WIDGETS.glob('cfg*.js')):
         key = cfg.stem[3:]
         part = (WIDGETS / f'part{key}.html').read_text(encoding='utf-8')
@@ -417,9 +571,10 @@ def build_widgets(out):
         titles[key] = m.group(1) if m else f'Animated breadboard {key}'
         # Inside a page, the widget sits under a section heading (h2), so its hidden heading is an h3.
         part = part.replace('<h2 class="sr-only">', '<h3 class="sr-only">', 1).replace('</h2>', '</h3>', 1)
-        (out / 'widgets' / f'{key}.html').write_text(
-            fill(frame, title=html.escape(titles[key]), icons_css=ICONS_CSS, widget=part), encoding='utf-8')
-    return titles
+        page = fill(frame, title=html.escape(titles[key]), icons_css=ICONS_CSS, widget=part)
+        (out / 'widgets' / f'{key}.html').write_text(page, encoding='utf-8')
+        versions[key] = stamp(page)
+    return titles, versions
 
 
 # ---------------------------------------------------------------- main
@@ -434,7 +589,8 @@ def main():
         shutil.rmtree(new)
     new.mkdir()
     try:
-        ctx = {'widgets': build_widgets(new)}
+        titles, versions = build_widgets(new)
+        ctx = {'widgets': titles, 'versions': versions}
         built = {}
         for s in sessions['sessions']:
             if s['id'] in READY:
@@ -443,6 +599,7 @@ def main():
         for name in ('style.css', 'site.js'):
             shutil.copy(SITE / name, new / name)
         shutil.copytree(ART, new / 'art', ignore=shutil.ignore_patterns('*.md', '.DS_Store'))
+        shutil.copytree(SITE / 'fonts', new / 'fonts', ignore=shutil.ignore_patterns('.DS_Store'))
         (new / '.nojekyll').write_text('')  # tells GitHub Pages to serve the files as they are
     except BaseException:
         shutil.rmtree(new)

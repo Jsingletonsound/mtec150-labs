@@ -6,11 +6,11 @@ const b=E('g',{transform:`rotate(${an} ${cx} ${cy})`},g);
 E('rect',{x:cx-23,y:cy-7,width:46,height:14,rx:6,fill:'#85B7EB',stroke:'#185FA5','stroke-width':.5},b);
 [...BANDS[p.v]].forEach((c,i)=>E('rect',{x:cx-17+i*6+(i>3?6:0),y:cy-7,width:3,height:14,fill:BC[c]},b))}
 else if(p.t=='L'){const[ax,ay]=P(p.a),[kx,ky]=P(p.k),vx=kx-ax,vy=ky-ay,L=Math.hypot(vx,vy),ux=vx/L,uy=vy/L;let nx=uy,ny=-ux;if(ny>0){nx=-nx;ny=-ny}if(p.dn){nx=-nx;ny=-ny}
-const cx=(ax+kx)/2+nx*21,cy=(ay+ky)/2+ny*21,b=br(s.I||0);
+const cx=(ax+kx)/2+nx*21,cy=(ay+ky)/2+ny*21,b=br(s.I||0),C=LC[p.c||'r'];
 E('path',{d:`M${ax} ${ay}L${ax+nx*10-ux*7} ${ay+ny*10-uy*7}L${cx-ux*11} ${cy-uy*11}`,...LEG},g);
 E('path',{d:`M${kx} ${ky}L${cx+ux*10} ${cy+uy*10}`,...LEG},g);
-if(b)E('circle',{cx,cy,r:27,fill:'#FF6A55',opacity:(b*.8).toFixed(2),class:s.ch?'lit':''},g);
-E('circle',{cx,cy,r:12,fill:mix([232,176,172],[242,60,50],b),stroke:'#A32D2D','stroke-width':1},g);
+if(b)E('circle',{cx,cy,r:27,fill:C[2],opacity:(b*.8).toFixed(2),class:s.ch?'lit':''},g);
+E('circle',{cx,cy,r:12,fill:mix(C[0],C[1],b),stroke:C[3],'stroke-width':1},g);
 if(b>.3)E('circle',{cx:cx-4,cy:cy-4,r:3,fill:'#fff',opacity:.7},g);
 p.fp=[[ax,ay],[cx,cy],[kx,ky]]}
 else if(p.t=='W'){let[ax,ay]=P(p.a);const[bx,by]=P(p.b),q=p.q;if(p.lo&&!s.tap){const o=p.lov||[12,-18];ax+=o[0];ay+=o[1]}

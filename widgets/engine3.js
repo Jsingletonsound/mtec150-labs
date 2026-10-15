@@ -13,7 +13,7 @@ const gp=$('gp');gp.innerHTML='';const nl={};
 v.forEach(id=>{const p=PT[id],I=pw?(r.lit[id]||0):0;nl[id]=I;const g=part(p,{I,ch:an&&I>0&&(pl[id]||0)!=I,pr:st.pr,pot:st.pot,tap:st.tap});if(an&&!pv.has(id))g.setAttribute('class','pin');gp.appendChild(g)});
 const gf=$('gf');gf.innerHTML='';
 if(pw)r.fl.forEach(f=>{const q=route(f.p,st.sw),d=Math.max(.2,Math.min(3,.4*Math.pow(21/f.i,.45)));E('path',{d:'M'+q.map(z=>z[0].toFixed(1)+' '+z[1].toFixed(1)).join('L'),class:'flow',style:'--d:'+d.toFixed(2)+'s'},gf)});
-const gx=$('gx');gx.innerHTML='';if(s.x&&rev){const[x,y]=s.x;E('path',{d:`M${x-8} ${y-8}L${x+8} ${y+8}M${x+8} ${y-8}L${x-8} ${y+8}`,stroke:'#E24B4A','stroke-width':4,'stroke-linecap':'round'},gx)}
+const gx=$('gx');gx.innerHTML='';if(s.x&&(rev||!s.q)){const[x,y]=s.x;E('path',{d:`M${x-8} ${y-8}L${x+8} ${y+8}M${x+8} ${y-8}L${x-8} ${y+8}`,stroke:'#E24B4A','stroke-width':4,'stroke-linecap':'round'},gx)}
 $('ro').textContent=r.ro||'';pv=v;pl=nl;
 const b=$('btn');if(b&&s.ix=='hold')b.onpointerdown=e=>{e.preventDefault();press(true)}}
 function press(on){if(st.pr==on)return;st.pr=on;draw(false)}
@@ -25,18 +25,23 @@ function controls(s){const x=$('ix');x.innerHTML='';
 const B=(l,f)=>{const b=document.createElement('button');b.innerHTML=l;if(f)b.onclick=f;x.appendChild(b);return b};
 const H=(l,fn)=>{const b=B(l);b.onpointerdown=e=>{e.preventDefault();fn(true)};b.onkeydown=e=>{if(e.key==' '||e.key=='Enter'){e.preventDefault();fn(true)}};b.onkeyup=()=>fn(false);return b};
 const Rg=(lab,mn,mx,val,fmt,on)=>{const w=document.createElement('label');w.style.cssText='display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-secondary);flex:1;min-width:230px';w.append(lab);const r=document.createElement('input');r.type='range';r.min=mn;r.max=mx;r.step=1;r.value=val;r.style.flex='1';const o=document.createElement('span');o.style.cssText='min-width:56px;color:var(--text-primary)';o.textContent=fmt(val);r.oninput=()=>{on(+r.value);o.textContent=fmt(+r.value)};w.append(r,o);x.appendChild(w)};
-if(s.q){const p=document.createElement('span');p.textContent='Predict first: '+s.q;x.appendChild(p);
-B('Show result',function(){rev=true;this.remove();$('wy').textContent='Result: '+s.why;draw(true)})}
+if(s.q){const p=document.createElement('span');p.textContent='Predict first: '+nb(s.q);x.appendChild(p);
+B('Show result',function(){rev=true;this.remove();$('wy').textContent='Result: '+nb(s.why);draw(true)})}
 if(s.ix=='hold')H('Hold to press',press);
 if(s.ix=='pot')Rg('Knob',0,100,0,v=>'pot '+((100-v)/10).toFixed(1)+'K',v=>{st.pot=v/100;draw(false)});
 if(s.ix=='ab')B('Swap 1K and 330',()=>{st.ab^=1;draw(true)});
 if(s.ix=='flip'){B('Flip the battery',()=>{st.sw=!st.sw;draw(false)});const t=B('Keep flipping',()=>{st.run=!st.run;t.textContent=st.run?'Stop':'Keep flipping';loop()});Rg('Flips per second',1,20,4,v=>v+' /s',v=>{st.rate=v;loop()})}
 if(s.ix=='tap'){H('Hold to tap',tap);const t=B('Keep tapping',()=>{st.run=!st.run;t.textContent=st.run?'Stop':'Keep tapping';loop()});Rg('Taps per second',1,200,4,v=>v+' /s',v=>{st.rate=v;loop()})}}
 window.addEventListener('pointerup',()=>{press(false);if(!st.run)tap(false)});
+// A number keeps its unit on the same line ("2 V", "15 mA", "330 Ω"), even on a phone.
+const nb=x=>(x||'').replace(/(\d) (?=(?:V|mA|Ω|K)(?![A-Za-z]))/g,'$1\u00a0');
 function go(i,an=true){if(i<0||i>=S.length)return;reset();cur=i;rev=false;const s=S[i];
-$('tt').textContent=s.t;$('dd').textContent=s.d;$('wy').textContent='';
+$('tt').textContent=nb(s.t);$('dd').textContent=nb(s.d);$('wy').textContent='';
+const f=document.activeElement;$('bk').disabled=i===0;$('nx').disabled=i===S.length-1;
+if(f&&f.disabled)(f===$('nx')?$('bk'):$('nx')).focus();
 $('ct').textContent=(typeof PART!=='undefined'?PART+(i+1)+' · ':'')+`Step ${i+1} of ${S.length}`;$('pb').style.width=(100*(i+1)/S.length)+'%';controls(s);draw(an)}
 function stop(){clearInterval(play);play=null;$('pl').innerHTML='<i class="ti ti-player-play" aria-hidden="true"></i> Play the build'}
-$('pl').onclick=()=>{if(play)return stop();play=setInterval(()=>{const n=S[cur+1];if(!n)return stop();go(cur+1);if(n.q||n.ix)stop()},2400);$('pl').innerHTML='<i class="ti ti-player-pause" aria-hidden="true"></i> Pause'};
+$('pl').onclick=()=>{if(play)return stop();play=setInterval(()=>{const n=S[cur+1];if(!n)return stop();go(cur+1);if(n.q||n.ix||n.pause)stop()},2400);$('pl').innerHTML='<i class="ti ti-player-pause" aria-hidden="true"></i> Pause'};
 $('nx').onclick=()=>{stop();go(cur+1)};$('bk').onclick=()=>{stop();go(cur-1)};
+if(typeof CROP!=='undefined')document.querySelector('svg').setAttribute('viewBox','0 0 680 '+CROP);
 board();go(0);

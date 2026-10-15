@@ -25,7 +25,7 @@ import shutil
 import sys
 import threading
 
-from playwright.async_api import async_playwright
+from playwright.async_api import TimeoutError as PlaywrightTimeout, async_playwright
 
 import build_site
 
@@ -36,6 +36,25 @@ SIZES = {'desktop': (1280, 900), 'phone': (390, 844)}
 
 problems = []   # anything here makes the check fail
 warnings = []   # worth a look, but not a failure
+
+
+async def visit(page, url, **options):
+    """Opens a page, and tries once more if the computer was too busy to finish loading it."""
+    try:
+        await page.goto(url, **options)
+    except PlaywrightTimeout:
+        print(f'  (a page took too long to load, trying once more: {url.split("/")[-1]})')
+        await page.goto(url, **options)
+
+
+async def snap(target, **options):
+    """Takes a screenshot, and tries once more if the computer was too busy to finish the first.
+    A page that is really broken fails the other checks, not this one."""
+    try:
+        await target.screenshot(**options)
+    except PlaywrightTimeout:
+        print(f'  (a screenshot timed out, trying once more: {pathlib.Path(options["path"]).name})')
+        await target.screenshot(**options)
 
 
 def fail(where, what):
@@ -233,10 +252,19 @@ async def step_widget(page, frame, where, shot, index=None):
             await wait_fits(page, index, here)
         await shot(i)
         log.append(f'{part}{i + 1}' + (f' ({", ".join(done)})' if done else ''))
+    # The arrows: Next is off on the last step and Back on the first, on purpose, and on every
+    # other step both are on.
+    arrows = "[document.getElementById('bk').disabled, document.getElementById('nx').disabled]"
+    if await frame.evaluate(arrows) != [False, True]:
+        fail(where, f'on the last step the arrows are {await frame.evaluate(arrows)} (Back off?, Next off?)')
     await frame.locator('#bk').click()
     if not (await frame.locator('#ct').text_content()).startswith(f'{part}{n - 1} '):
         fail(where, 'the Back button did not go back one step')
-    await frame.locator('#bk').click()
+    if n > 2 and await frame.evaluate(arrows) != [False, False]:
+        fail(where, f'on a middle step the arrows are {await frame.evaluate(arrows)} (Back off?, Next off?)')
+    await frame.evaluate('go(0)')
+    if await frame.evaluate(arrows) != [True, n == 1]:
+        fail(where, f'on step 1 the arrows are {await frame.evaluate(arrows)} (Back off?, Next off?)')
     # Play the build: it should start, move on by itself, and pause.
     await frame.evaluate('go(0)')
     play = frame.locator('#pl')
@@ -260,13 +288,14 @@ async def check_page(browser, base, name, size):
     where = f'{name} at {width} px'
     ctx = await browser.new_context(viewport={'width': width, 'height': height}, reduced_motion='reduce')
     page = await ctx.new_page()
+    page.set_default_timeout(90000)
     watch(page, where, base)
-    await page.goto(base + name, wait_until='networkidle')
+    await visit(page, base + name, wait_until='networkidle', timeout=90000)
     frames = page.locator('iframe.widget-frame')
     count = await frames.count()
     for i in range(count):
         await wait_fits(page, i, f'{where} widget {i + 1} on load')
-    await page.screenshot(path=OUT / f'{stem}-{size}.png', full_page=True)
+    await snap(page, path=OUT / f'{stem}-{size}.png', full_page=True)
 
     # Layout and headings
     wide = await page.evaluate('document.documentElement.scrollWidth - window.innerWidth')
@@ -293,7 +322,7 @@ async def check_page(browser, base, name, size):
     if printed['widgets'] or printed['notes'] or printed['teacher'] or printed['steps']:
         fail(where, f'print layout: {printed}')
     if size == 'desktop':
-        await page.screenshot(path=OUT / f'{stem}-print.png', full_page=True)
+        await snap(page, path=OUT / f'{stem}-print.png', full_page=True)
     await page.evaluate("window.dispatchEvent(new Event('afterprint'))")
     await page.emulate_media(media='screen')
 
@@ -303,10 +332,10 @@ async def check_page(browser, base, name, size):
         if not (await frame_el.get_attribute('title') or '').strip():
             fail(where, f'widget {i + 1} has no title')
         frame = await (await frame_el.element_handle()).content_frame()
-        key = (await frame_el.get_attribute('src')).split('/')[-1][:-5]
+        key = (await frame_el.get_attribute('src')).split('?')[0].split('/')[-1][:-5]
 
         async def shot(step, el=frame_el, key=key):
-            await el.screenshot(path=OUT / 'widgets' / f'{stem}-{key}-{size}-{step + 1:02d}.png')
+            await snap(el, path=OUT / 'widgets' / f'{stem}-{key}-{size}-{step + 1:02d}.png')
         n, log = await step_widget(page, frame, f'{where} widget {key}', shot, index=i)
         print(f'  {name} {size}: widget {key}, {n} steps: ' + ' · '.join(log))
 
@@ -328,7 +357,7 @@ async def check_page(browser, base, name, size):
         frame = await (await frames.nth(i).element_handle()).content_frame()
         for p in await frame.evaluate(CONTRAST_JS, None):
             fail(f'{where} widget {i + 1}', f'low text contrast {p}')
-    await page.screenshot(path=OUT / f'{stem}-{size}-opened.png', full_page=True)
+    await snap(page, path=OUT / f'{stem}-{size}-opened.png', full_page=True)
 
     # The parts, one at a time
     await check_spotlight(page, where, f'{stem}-{size}')
@@ -347,7 +376,7 @@ async def check_page(browser, base, name, size):
                 fail(where, f'widget {i + 1} did not get bigger with the Projector button')
             await wait_fits(page, i, f'{where} widget {i + 1} with the projector on')
         await page.evaluate('window.scrollTo(0, 0)')
-        await page.screenshot(path=OUT / f'{stem}-projector.png')
+        await snap(page, path=OUT / f'{stem}-projector.png')
         # A classroom projector is often 1280 x 800: the board and its step text should fit on it together.
         await page.set_viewport_size({'width': 1280, 'height': 800})
         for i in range(count):
@@ -363,12 +392,12 @@ async def check_page(browser, base, name, size):
                 await show.click()
             await wait_fits(page, i, f'{where} widget {i + 1} on a 1280 x 800 projector, result shown')
             await frames.nth(i).evaluate('f => f.scrollIntoView()')
-            await page.screenshot(path=OUT / f'{stem}-projector-widget{i + 1}.png')
+            await snap(page, path=OUT / f'{stem}-projector-widget{i + 1}.png')
             await frame.evaluate('go(0)')
         if await page.locator('.spotlight-start').count():
             await page.locator('.spotlight-start').first.click()
             await page.wait_for_timeout(200)
-            await page.screenshot(path=OUT / f'{stem}-projector-parts.png')
+            await snap(page, path=OUT / f'{stem}-projector-parts.png')
             await page.keyboard.press('Escape')
         await page.set_viewport_size({'width': width, 'height': height})
         await page.get_by_role('button', name='Projector').click()
@@ -399,7 +428,7 @@ async def check_spotlight(page, where, shot):
         if not await dialog.evaluate("d => { const i = d.querySelector('.spot-art img'); return i.complete && i.naturalWidth > 0 }"):
             fail(where, f'the parts view drawing for "{name}" did not load')
         if i in (0, 2):
-            await page.screenshot(path=OUT / f'{shot}-parts-{i + 1:02d}.png')
+            await snap(page, path=OUT / f'{shot}-parts-{i + 1:02d}.png')
         await page.keyboard.press('ArrowRight')
     await page.keyboard.press('ArrowLeft')
     if await dialog.locator('.spot-count').text_content() != f'{parts - 1} of {parts}':
@@ -424,8 +453,9 @@ async def check_teacher(browser, base, name):
     where = f'{name}?teacher=1'
     ctx = await browser.new_context(viewport={'width': 1280, 'height': 900}, reduced_motion='reduce')
     page = await ctx.new_page()
+    page.set_default_timeout(90000)
     watch(page, where, base)
-    await page.goto(base + name + '?teacher=1', wait_until='networkidle')
+    await visit(page, base + name + '?teacher=1', wait_until='networkidle', timeout=90000)
     hidden = await page.evaluate("[...document.querySelectorAll('.teacher-only')].filter(e => !e.getClientRects().length).length")
     if hidden:
         fail(where, f'{hidden} teacher-only blocks are still hidden')
@@ -435,55 +465,89 @@ async def check_teacher(browser, base, name):
     for href in links:
         if not re.match(r'^([a-z]+:|//|#)', href) and 'teacher=1' not in href:
             fail(where, f'the link "{href}" drops ?teacher=1')
-    await page.screenshot(path=OUT / f'{stem}-teacher.png', full_page=True)
+    await snap(page, path=OUT / f'{stem}-teacher.png', full_page=True)
     await page.emulate_media(media='print')
     await page.evaluate("window.dispatchEvent(new Event('beforeprint'))")
     hidden = await page.evaluate("[...document.querySelectorAll('main .teacher-only')].filter(e => !e.getClientRects().length).length")
     if hidden:
         fail(where, 'printing in teacher view should keep the teacher notes')
-    await page.screenshot(path=OUT / f'{stem}-teacher-print.png', full_page=True)
+    await snap(page, path=OUT / f'{stem}-teacher-print.png', full_page=True)
     await page.pdf(path=OUT / f'{stem}-teacher-print.pdf', format='Letter', print_background=True, prefer_css_page_size=True)
     await ctx.close()
     # The student print, as a real PDF (letter paper), for a look at the page breaks
     ctx = await browser.new_context(reduced_motion='reduce')
     page = await ctx.new_page()
-    await page.goto(base + name, wait_until='networkidle')
+    page.set_default_timeout(90000)
+    await visit(page, base + name, wait_until='networkidle', timeout=90000)
     await page.emulate_media(media='print')
     await page.evaluate("window.dispatchEvent(new Event('beforeprint'))")
     await page.pdf(path=OUT / f'{stem}-print.pdf', format='Letter', print_background=True, prefer_css_page_size=True)
     await ctx.close()
 
 
-async def check_dark(browser, base, name):
-    """Dark mode, at both widths: screenshots and contrast."""
+LOOKS = [('notebook', 'light'), ('notebook', 'dark'), ('graph', 'light'), ('graph', 'dark'), ('bench', 'light')]
+
+HAND_JS = """
+() => {
+  const root = parseFloat(getComputedStyle(document.documentElement).fontSize), bad = [];
+  for (const el of document.querySelectorAll('body *')) {
+    if (!el.getClientRects().length || el.closest('.sr-only')) continue;
+    const cs = getComputedStyle(el);
+    if (!cs.fontFamily.includes('MTEC Notebook Hand')) continue;
+    if (![...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) continue;
+    if (parseFloat(cs.fontSize) < 1.1 * root - 0.05)
+      bad.push(`${(parseFloat(cs.fontSize) / root).toFixed(2)}rem "${el.textContent.trim().slice(0, 40)}"`);
+  }
+  return bad;
+}
+"""
+
+
+async def check_looks(browser, base, name):
+    """The three looks (?look=notebook, graph, bench), by day and by night, at both widths:
+    the fonts load, hand lettering is never smaller than 1.1rem, contrast, nothing too wide,
+    and a screenshot of each."""
     stem = name[:-5]
-    for size, (width, height) in SIZES.items():
-        where = f'{name} dark mode at {width} px'
-        ctx = await browser.new_context(viewport={'width': width, 'height': height},
-                                        color_scheme='dark', reduced_motion='reduce')
-        page = await ctx.new_page()
-        watch(page, where, base)
-        await page.goto(base + name, wait_until='networkidle')
-        for summary in await page.locator('main summary').all():
-            await summary.click()
-        for i in range(await page.locator('iframe.widget-frame').count()):
-            await wait_fits(page, i, where)
-        for p in await page.evaluate(CONTRAST_JS, None):
-            fail(where, f'low text contrast {p}')
-        for f in page.frames[1:]:
-            for p in await f.evaluate(CONTRAST_JS, None):
-                fail(f'{where} widget', f'low text contrast {p}')
-        await page.screenshot(path=OUT / f'{stem}-{size}-dark.png', full_page=True)
-        await ctx.close()
+    for look, scheme in LOOKS:
+        for size, (width, height) in SIZES.items():
+            where = f'{name}?look={look} ({scheme}) at {width} px'
+            ctx = await browser.new_context(viewport={'width': width, 'height': height},
+                                            color_scheme=scheme, reduced_motion='reduce')
+            page = await ctx.new_page()
+            page.set_default_timeout(90000)
+            watch(page, where, base)
+            await visit(page, base + name + f'?look={look}', wait_until='networkidle', timeout=90000)
+            await page.evaluate('document.fonts.ready')
+            if not await page.evaluate("""document.fonts.check('16px "MTEC Notebook Hand"') && document.fonts.check('16px "Atkinson Hyperlegible"')"""):
+                fail(where, 'the hand lettering or the reading font did not load')
+            if look != 'notebook' and await page.evaluate("document.documentElement.dataset.look") != look:
+                fail(where, f'?look={look} did not switch the look')
+            for summary in await page.locator('main summary').all():
+                await summary.click()
+            for i in range(await page.locator('iframe.widget-frame').count()):
+                await wait_fits(page, i, where)
+            for p in await page.evaluate(CONTRAST_JS, None):
+                fail(where, f'low text contrast {p}')
+            for f in page.frames[1:]:
+                for p in await f.evaluate(CONTRAST_JS, None):
+                    fail(f'{where} widget', f'low text contrast {p}')
+            for p in await page.evaluate(HAND_JS):
+                fail(where, f'hand lettering smaller than 1.1rem: {p}')
+            wide = await page.evaluate('document.documentElement.scrollWidth - window.innerWidth')
+            if wide > 0:
+                fail(where, f'the page is {wide} px wider than the screen')
+            await snap(page, path=OUT / f'{stem}-{size}-{look}-{scheme}.png', full_page=True)
+            await ctx.close()
 
 
 async def check_links(browser, base, names):
     """Every link to another page of this site works."""
     ctx = await browser.new_context()
     page = await ctx.new_page()
+    page.set_default_timeout(90000)
     seen = set()
     for name in names:
-        await page.goto(base + name)
+        await visit(page, base + name)
         for href in await page.evaluate("[...document.querySelectorAll('a[href]')].map(a => a.href)"):
             if href.startswith(base) and href.split('#')[0] not in seen:
                 seen.add(href.split('#')[0])
@@ -512,11 +576,12 @@ async def check_widget_alone(browser, base, key):
     where = f'widgets/{key}.html'
     ctx = await browser.new_context(viewport={'width': 720, 'height': 900}, reduced_motion='reduce')
     page = await ctx.new_page()
+    page.set_default_timeout(90000)
     watch(page, where, base)
-    await page.goto(base + f'widgets/{key}.html', wait_until='networkidle')
+    await visit(page, base + f'widgets/{key}.html', wait_until='networkidle', timeout=90000)
 
     async def shot(step):
-        await page.screenshot(path=OUT / 'widgets' / f'alone-{key}-{step + 1:02d}.png', full_page=True)
+        await snap(page, path=OUT / 'widgets' / f'alone-{key}-{step + 1:02d}.png', full_page=True)
     n, log = await step_widget(page, page.main_frame, where, shot)
     print(f'  widgets/{key}.html alone, {n} steps: ' + ' · '.join(log))
     await ctx.close()
@@ -545,7 +610,7 @@ async def main():
             for size in SIZES:
                 await check_page(browser, base, name, size)
             await check_teacher(browser, base, name)
-            await check_dark(browser, base, name)
+            await check_looks(browser, base, name)
         await check_links(browser, base, names)
         for key in keys:
             await check_widget_alone(browser, base, key)

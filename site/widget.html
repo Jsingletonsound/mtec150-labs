@@ -7,6 +7,11 @@
 <meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="{{icons_css}}">
 <style>
+/* The deck's lettering, from the site's own font files (docs/fonts). */
+@font-face { font-family: "MTEC Notebook Hand"; src: url("../fonts/MTECNotebookHand-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "MTEC Notebook Hand"; src: url("../fonts/MTECNotebookHand-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Atkinson Hyperlegible"; src: url("../fonts/AtkinsonHyperlegible-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Atkinson Hyperlegible"; src: url("../fonts/AtkinsonHyperlegible-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
 /* The page around one animated breadboard. The colors match site/style.css.
    The board itself keeps its fixed "physical" colors in light and dark mode, on purpose. */
 :root {
@@ -16,25 +21,38 @@
   --border: #d9d6cd;
   --border-strong: #8a877e;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --bg: #f6f4ef;
+  --bg: #FCFCF9;   /* the page's paper; the page sends its exact color */
   --button: #ffffff;
   --button-hover: #ece9e1;
   --focus: #185fa5;
   --bench: transparent;
 }
+/* The dark notebook: when the device is in dark mode, or the page sends dark (?look=bench). */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     --text-primary: #ecebe6;
     --text-secondary: #bdbab2;
     --text-accent: #8ec2f7;
     --border: #3d3c38;
     --border-strong: #7d7a72;
-    --bg: #23221f;
+    --bg: #1D1E20;
     --button: #2e2d2a;
     --button-hover: #3a3935;
     --focus: #8ec2f7;
     --bench: #c9c5bb; /* a light bench behind the board, so the black battery and leads stay visible */
   }
+}
+:root.dark {
+    --text-primary: #ecebe6;
+    --text-secondary: #bdbab2;
+    --text-accent: #8ec2f7;
+    --border: #3d3c38;
+    --border-strong: #7d7a72;
+    --bg: #1D1E20;
+    --button: #2e2d2a;
+    --button-hover: #3a3935;
+    --focus: #8ec2f7;
+    --bench: #c9c5bb; /* a light bench behind the board, so the black battery and leads stay visible */
 }
 html { font-size: 16px; -webkit-text-size-adjust: 100%; }
 html.projector { font-size: 20px; }
@@ -42,7 +60,7 @@ body {
   margin: 0;
   padding: 12px 14px 16px;
   display: flow-root;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 1rem;
   line-height: 1.5;
   color: var(--text-primary);
@@ -53,25 +71,37 @@ svg { display: block; background: var(--bench); border-radius: 8px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 button {
   font: inherit;
-  font-size: 0.9375rem;
+  font-family: "MTEC Notebook Hand", "Chalkboard SE", "Comic Sans MS", cursive;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  font-size: 1.1rem;
+  line-height: 1.2;
   min-height: 44px;
   padding: 8px 14px;
-  border: 1px solid var(--border-strong);
-  border-radius: 8px;
+  border: 2px solid var(--text-primary);
+  border-radius: 18px 5px 16px 6px / 6px 16px 5px 18px;
   background: var(--button);
   color: var(--text-primary);
   cursor: pointer;
   touch-action: manipulation;
 }
 button:hover { background: var(--button-hover); }
+button:disabled { opacity: 0.4; cursor: default; }
+button:disabled:hover { background: var(--button); }
 button .ti { font-size: 1.1em; vertical-align: -2px; }
 button:focus-visible, input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 input[type="range"] { accent-color: var(--text-accent); min-height: 32px; }
 /* The engine sets a few sizes in pixels; these keep them readable and let the projector setting scale them. */
 svg + p { font-size: 0.8125rem !important; }
-#ct { font-size: 0.875rem !important; }
 #ro { font-size: 0.875rem !important; }
 #ix label { font-size: 0.875rem !important; }
+/* The deck's look: the step title in hand-lettered caps, the step counter like a kicker,
+   the strip numbers bold. */
+#tt { font-family: "MTEC Notebook Hand", "Chalkboard SE", "Comic Sans MS", cursive; text-transform: uppercase;
+      letter-spacing: 0.04em; font-size: 1.35rem !important; font-weight: 700 !important; line-height: 1.25; margin-top: 14px !important; }
+#ct { font-family: "MTEC Notebook Hand", "Chalkboard SE", "Comic Sans MS", cursive; text-transform: uppercase;
+      letter-spacing: 0.08em; font-size: 1.1rem !important; }
+#dd { font-size: 1.05rem; }
+.sn { font-weight: 700; paint-order: stroke; stroke: #F4F2EC; stroke-width: 4px; stroke-linejoin: round; }
 /* On a phone the board is drawn small: bigger strip numbers and seat letters. */
 @media (max-width: 480px) { .ts { font-size: 20px; } }
 @media (prefers-reduced-motion: reduce) { #pb { transition: none !important; } }
@@ -117,10 +147,15 @@ svg + p { font-size: 0.8125rem !important; }
   // the board shrinks if needed so the board and the step text fit on the screen together.
   window.addEventListener('message', function (e) {
     if (e.source !== window.parent || !e.data || e.data.type !== 'mtec-site') return;
-    var on = !!e.data.projector;
-    document.documentElement.classList.toggle('projector', on);
+    var on = !!e.data.projector, root = document.documentElement;
+    root.classList.toggle('projector', on);
+    if (typeof e.data.dark === 'boolean') {
+      root.classList.toggle('dark', e.data.dark);
+      root.classList.toggle('light', !e.data.dark);
+    }
+    if (e.data.paper) root.style.setProperty('--bg', e.data.paper);
     var board = document.querySelector('svg');
-    if (board) board.style.maxHeight = on && e.data.screenH ? Math.max(260, e.data.screenH - 360) + 'px' : '';
+    if (board) board.style.maxHeight = on && e.data.screenH ? Math.max(260, e.data.screenH - 470) + 'px' : '';
     report();
   });
   report(true);

@@ -7,3 +7,6 @@ widgets/part*.html
 widgets/test*.html
 widgets/shots/
 docs.new/
+# never publish archives (e.g. a copy of the private deck folder)
+*.tgz
+*.zip

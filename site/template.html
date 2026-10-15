@@ -6,17 +6,29 @@
 <title>{{title}} · MTEC 150</title>
 {{robots}}<meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="{{icons_css}}">
-<link rel="stylesheet" href="style.css">
-<script>try{if(sessionStorage.getItem('mtec-projector')==='1')document.documentElement.classList.add('projector')}catch(e){}</script>
-<script src="site.js" defer></script>
+<link rel="stylesheet" href="style.css?v={{css_v}}">
+<script>
+// Before the page draws: the look (?look=notebook, graph or bench, kept while this tab is open)
+// and the projector setting.
+(function () {
+  var root = document.documentElement, look = null;
+  try { look = new URLSearchParams(location.search).get('look'); } catch (e) {}
+  try { if (look) sessionStorage.setItem('mtec-look', look); else look = sessionStorage.getItem('mtec-look'); } catch (e) {}
+  if (look === 'graph' || look === 'bench') root.setAttribute('data-look', look);
+  try { if (sessionStorage.getItem('mtec-projector') === '1') root.classList.add('projector'); } catch (e) {}
+})();
+</script>
+<script src="site.js?v={{js_v}}" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to the page</a>
 <header class="site-bar">
 <div class="bar-inner">
 <a class="home" href="index.html"><i class="ti ti-home" aria-hidden="true"></i> {{course}}</a>
+<div class="bar-tools">
 <span class="teacher-badge teacher-only">Teacher view</span>
 <button class="projector-toggle" type="button" aria-pressed="false"><i class="ti ti-presentation" aria-hidden="true"></i> Projector</button>
+</div>
 </div>
 </header>
 <main id="main">

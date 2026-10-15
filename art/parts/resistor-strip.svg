@@ -22,7 +22,7 @@
     <g fill="#2c2c2a"><rect x="102" y="102" width="16" height="4"/><rect x="142" y="102" width="16" height="4"/><rect x="182" y="102" width="16" height="4"/><rect x="222" y="102" width="16" height="4"/><rect x="262" y="102" width="16" height="4"/></g>
     <g fill="#2c2c2a"><rect x="102" y="109" width="16" height="4"/><rect x="142" y="109" width="16" height="4"/><rect x="182" y="109" width="16" height="4"/><rect x="222" y="109" width="16" height="4"/><rect x="262" y="109" width="16" height="4"/></g>
     <g fill="#7b4a26"><rect x="102" y="116" width="16" height="4"/><rect x="142" y="116" width="16" height="4"/><rect x="182" y="116" width="16" height="4"/><rect x="222" y="116" width="16" height="4"/><rect x="262" y="116" width="16" height="4"/></g>
-    <g fill="#3b9e4a"><rect x="102" y="126" width="16" height="4"/><rect x="142" y="126" width="16" height="4"/><rect x="182" y="126" width="16" height="4"/><rect x="222" y="126" width="16" height="4"/><rect x="262" y="126" width="16" height="4"/></g>
+    <g fill="#7b4a26"><rect x="102" y="126" width="16" height="4"/><rect x="142" y="126" width="16" height="4"/><rect x="182" y="126" width="16" height="4"/><rect x="222" y="126" width="16" height="4"/><rect x="262" y="126" width="16" height="4"/></g>
   </g>
   <!-- paper tape, top and bottom -->
   <path d="M20 26 H300 L298 54 H22 Z" fill="#fbf1d2" opacity="0.95"/>

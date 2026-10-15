@@ -6,17 +6,29 @@
 <title>Electronics labs · MTEC 150</title>
 <meta name="color-scheme" content="light dark">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.48.0/dist/tabler-icons.min.css">
-<link rel="stylesheet" href="style.css">
-<script>try{if(sessionStorage.getItem('mtec-projector')==='1')document.documentElement.classList.add('projector')}catch(e){}</script>
-<script src="site.js" defer></script>
+<link rel="stylesheet" href="style.css?v=42610a5c">
+<script>
+// Before the page draws: the look (?look=notebook, graph or bench, kept while this tab is open)
+// and the projector setting.
+(function () {
+  var root = document.documentElement, look = null;
+  try { look = new URLSearchParams(location.search).get('look'); } catch (e) {}
+  try { if (look) sessionStorage.setItem('mtec-look', look); else look = sessionStorage.getItem('mtec-look'); } catch (e) {}
+  if (look === 'graph' || look === 'bench') root.setAttribute('data-look', look);
+  try { if (sessionStorage.getItem('mtec-projector') === '1') root.classList.add('projector'); } catch (e) {}
+})();
+</script>
+<script src="site.js?v=c560fbb2" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to the page</a>
 <header class="site-bar">
 <div class="bar-inner">
 <a class="home" href="index.html"><i class="ti ti-home" aria-hidden="true"></i> MTEC 150 · Acoustics and Audio Electronics</a>
+<div class="bar-tools">
 <span class="teacher-badge teacher-only">Teacher view</span>
 <button class="projector-toggle" type="button" aria-pressed="false"><i class="ti ti-presentation" aria-hidden="true"></i> Projector</button>
+</div>
 </div>
 </header>
 <main id="main">
@@ -31,6 +43,11 @@
 <li class="session">
 <span class="session-date">Oct 8</span>
 <a href="kit-day.html">Kit Day: meet your kit</a>
+<span class="chip chip-published">Published</span>
+</li>
+<li class="session">
+<span class="session-date">Oct 15</span>
+<a href="lab2.html">Lab 2: one loop, then several</a>
 <span class="chip chip-published">Published</span>
 </li>
 </ol>
